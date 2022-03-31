@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "target": "es6",
+    "moduleResolution": "node",
+    "outDir": "dist"
+  },
+  "include": ["src", "node_modules/@types/puppeteer/index.d.ts"]
+}
