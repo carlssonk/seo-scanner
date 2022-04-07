@@ -7,58 +7,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { pipeEntries } from "../utils.js";
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 export const seo = (page) => __awaiter(void 0, void 0, void 0, function* () {
     // Scan for HTML TAGS
     // const funcs = [await hasOneH1(page),]
-    const pipe = (funcs) => __awaiter(void 0, void 0, void 0, function* () {
-        let data = [];
-        for (let i = 0; i < funcs.length; i++) {
-            const { approved, elementContent, tagStart, tagEnd, text, error } = yield funcs[i];
-            data.push({ approved, elementContent, tagStart, tagEnd, text, error });
-        }
-        return data;
-    });
-    const data = yield pipe([
-        yield hasTitle(page),
-        yield hasOneH1(page),
-        yield hasMetaDescription(page),
-        yield hasMetaViewport(page),
-        yield hasAltAttributes(page),
+    const data = yield pipeEntries([
+        hasTitle(page),
+        hasOneH1(page),
+        hasMetaDescription(page),
+        hasMetaViewport(page),
+        hasAltAttributes(page),
     ]);
-    console.log(data);
     return data;
-    // return [
-    //   // {
-    //   //   approved: await hasOneH1(page),
-    //   //   tag: "<h1>",
-    //   //   text: "Sidan innehåller 1",
-    //   //   error: "",
-    //   // },
-    //   // {
-    //   //   approved: await hasAltAttributes(page),
-    //   //   tag: '<img alt="...">',
-    //   //   text: "Sidan innehåller ",
-    //   //   error: "",
-    //   // },
-    //   {
-    //     approved: await hasTitle(page),
-    //     tag: "<title>",
-    //     text: "Sidan innehåller",
-    //     error: "",
-    //   },
-    //   {
-    //     approved: await hasMetaDescription(page),
-    //     tag: '<meta name="description">',
-    //     text: "Sidan innehåller",
-    //     error: "",
-    //   },
-    //   {
-    //     approved: await hasMetaViewport(page),
-    //     tag: '<meta name="viewport">',
-    //     text: "Sidan innehåller",
-    //     error: "",
-    //   },
-    // ];
 });
 const hasOneH1 = (page) => __awaiter(void 0, void 0, void 0, function* () {
     const h1s = JSON.parse(yield page.evaluate(() => {
@@ -73,7 +34,7 @@ const hasOneH1 = (page) => __awaiter(void 0, void 0, void 0, function* () {
         elementContent: h1s[0],
         tagStart: "<h1>",
         tagEnd: "</h1>",
-        text: "Sidan innehåller 1 $",
+        text: "Sidan innehåller 1",
         error: !approved ? `Vi hitta ${h1s.length} h1 rubriker på sidan.` : "",
     };
     return object;
@@ -110,11 +71,10 @@ const hasAltAttributes = (page) => __awaiter(void 0, void 0, void 0, function* (
             return names.join(">");
         }
     }));
-    const createError = (text) => __awaiter(void 0, void 0, void 0, function* () {
-        let error = { text, elements: [] };
+    const createError = () => __awaiter(void 0, void 0, void 0, function* () {
+        let error = { text: "", elements: [] };
         for (let i = 0; i < altTags.length; i++) {
-            if (altTags[i].approved)
-                continue;
+            // if (altTags[i].approved) continue;
             const elementHandler = yield page.$(altTags[i].selector);
             let screenshot;
             try {
@@ -122,13 +82,14 @@ const hasAltAttributes = (page) => __awaiter(void 0, void 0, void 0, function* (
             }
             catch (_a) {
                 error.elements.push({
-                    element: altTags[i].outerHTML,
+                    outerHTML: altTags[i].outerHTML,
                     screenshot: null,
                 });
                 continue;
             }
-            error.elements.push({ element: altTags[i].outerHTML, screenshot });
+            error.elements.push({ outerHTML: altTags[i].outerHTML, screenshot });
         }
+        error.text = `Sidan saknar alt attribut på ${error.elements.length} element`;
         return error;
     });
     const approved = altTags.every((tag) => tag.approved);
@@ -137,10 +98,8 @@ const hasAltAttributes = (page) => __awaiter(void 0, void 0, void 0, function* (
         elementContent: "",
         tagStart: '[alt="..."]',
         tagEnd: "",
-        text: "Det saknas inte $ attribut",
-        error: !approved
-            ? yield createError("Det saknas $ attribut på följande element")
-            : "",
+        text: "Sidan saknar inga",
+        error: true ? yield createError() : "",
     };
     return object;
 });
@@ -155,7 +114,7 @@ const hasTitle = (page) => __awaiter(void 0, void 0, void 0, function* () {
         elementContent: title,
         tagStart: "<title>",
         tagEnd: "</title>",
-        text: "Sidan innehåller en $",
+        text: "Sidan innehåller",
         error: !approved ? "Sidan saknar en titel." : "",
     };
     return object;
@@ -171,7 +130,7 @@ const hasMetaDescription = (page) => __awaiter(void 0, void 0, void 0, function*
         elementContent: description,
         tagStart: '<meta name="$description$" content="',
         tagEnd: '">',
-        text: "Sidan innehåller en $",
+        text: "Sidan innehåller",
         error: !approved ? "Sidan saknar en beskrivning." : "",
     };
     return object;
@@ -187,7 +146,7 @@ const hasMetaViewport = (page) => __awaiter(void 0, void 0, void 0, function* ()
         elementContent: viewport,
         tagStart: '<meta name="$viewport$" content="',
         tagEnd: '">',
-        text: "Sidan innehåller en $",
+        text: "Sidan innehåller",
         error: !approved ? "Sidan saknar en viewport." : "",
     };
     return object;

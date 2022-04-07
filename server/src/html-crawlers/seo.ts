@@ -1,74 +1,23 @@
 import puppeteer from "puppeteer";
+import { Entry } from "../interfaces.js";
+import { pipeEntries } from "../utils.js";
 
-interface Entry {
-  approved: boolean;
-  elementContent: string;
-  tagStart: string;
-  tagEnd: string;
-  text: string;
-  error: string | object;
-}
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 
 export const seo = async (page) => {
   // Scan for HTML TAGS
 
   // const funcs = [await hasOneH1(page),]
 
-  const pipe = async (funcs) => {
-    let data = [];
-
-    for (let i = 0; i < funcs.length; i++) {
-      const { approved, elementContent, tagStart, tagEnd, text, error } = await funcs[i];
-      data.push({ approved, elementContent, tagStart, tagEnd, text, error });
-    }
-
-    return data;
-  };
-
-  const data = await pipe([
-    await hasTitle(page),
-    await hasOneH1(page),
-    await hasMetaDescription(page),
-    await hasMetaViewport(page),
-    await hasAltAttributes(page),
+  const data = await pipeEntries([
+    hasTitle(page),
+    hasOneH1(page),
+    hasMetaDescription(page),
+    hasMetaViewport(page),
+    hasAltAttributes(page),
   ]);
 
-  console.log(data);
-
   return data;
-
-  // return [
-  //   // {
-  //   //   approved: await hasOneH1(page),
-  //   //   tag: "<h1>",
-  //   //   text: "Sidan innehåller 1",
-  //   //   error: "",
-  //   // },
-  //   // {
-  //   //   approved: await hasAltAttributes(page),
-  //   //   tag: '<img alt="...">',
-  //   //   text: "Sidan innehåller ",
-  //   //   error: "",
-  //   // },
-  //   {
-  //     approved: await hasTitle(page),
-  //     tag: "<title>",
-  //     text: "Sidan innehåller",
-  //     error: "",
-  //   },
-  //   {
-  //     approved: await hasMetaDescription(page),
-  //     tag: '<meta name="description">',
-  //     text: "Sidan innehåller",
-  //     error: "",
-  //   },
-  //   {
-  //     approved: await hasMetaViewport(page),
-  //     tag: '<meta name="viewport">',
-  //     text: "Sidan innehåller",
-  //     error: "",
-  //   },
-  // ];
 };
 
 const hasOneH1 = async (page: puppeteer.Page): Promise<Entry> => {
@@ -90,7 +39,7 @@ const hasOneH1 = async (page: puppeteer.Page): Promise<Entry> => {
     elementContent: h1s[0],
     tagStart: "<h1>",
     tagEnd: "</h1>",
-    text: "Sidan innehåller 1 $",
+    text: "Sidan innehåller 1",
     error: !approved ? `Vi hitta ${h1s.length} h1 rubriker på sidan.` : "",
   };
   return object;
@@ -133,26 +82,27 @@ const hasAltAttributes = async (page: puppeteer.Page): Promise<Entry> => {
     })
   );
 
-  const createError = async (text) => {
-    let error = { text, elements: [] };
+  const createError = async (): Promise<{ text: string; elements: any[] }> => {
+    let error = { text: "", elements: [] };
 
     for (let i = 0; i < altTags.length; i++) {
-      if (altTags[i].approved) continue;
+      // if (altTags[i].approved) continue;
       const elementHandler = await page.$(altTags[i].selector);
       let screenshot: string | Buffer;
       try {
         screenshot = await elementHandler.screenshot({ encoding: "base64" });
       } catch {
         error.elements.push({
-          element: altTags[i].outerHTML,
+          outerHTML: altTags[i].outerHTML,
           screenshot: null,
         });
         continue;
       }
 
-      error.elements.push({ element: altTags[i].outerHTML, screenshot });
+      error.elements.push({ outerHTML: altTags[i].outerHTML, screenshot });
     }
 
+    error.text = `Sidan saknar alt attribut på ${error.elements.length} element`;
     return error;
   };
 
@@ -162,8 +112,8 @@ const hasAltAttributes = async (page: puppeteer.Page): Promise<Entry> => {
     elementContent: "",
     tagStart: '[alt="..."]',
     tagEnd: "",
-    text: "Det saknas inte $ attribut",
-    error: !approved ? await createError("Det saknas $ attribut på följande element") : "",
+    text: "Sidan saknar inga",
+    error: true ? await createError() : "",
   };
   return object;
 };
@@ -180,7 +130,7 @@ const hasTitle = async (page: puppeteer.Page): Promise<Entry> => {
     elementContent: title,
     tagStart: "<title>",
     tagEnd: "</title>",
-    text: "Sidan innehåller en $",
+    text: "Sidan innehåller",
     error: !approved ? "Sidan saknar en titel." : "",
   };
   return object;
@@ -197,7 +147,7 @@ const hasMetaDescription = async (page: puppeteer.Page): Promise<Entry> => {
     elementContent: description,
     tagStart: '<meta name="$description$" content="',
     tagEnd: '">',
-    text: "Sidan innehåller en $",
+    text: "Sidan innehåller",
     error: !approved ? "Sidan saknar en beskrivning." : "",
   };
   return object;
@@ -215,7 +165,7 @@ const hasMetaViewport = async (page: puppeteer.Page): Promise<Entry> => {
     elementContent: viewport,
     tagStart: '<meta name="$viewport$" content="',
     tagEnd: '">',
-    text: "Sidan innehåller en $",
+    text: "Sidan innehåller",
     error: !approved ? "Sidan saknar en viewport." : "",
   };
   return object;

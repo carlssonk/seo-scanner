@@ -1,10 +1,12 @@
 import { useState, useRef, createRef, useEffect } from "react";
+import { Entry as EntryInterface } from "../../server/src/interfaces";
 import { nanoid } from "nanoid";
 // import logo from './logo.svg'
 // import './App.css'
 
 import { FormEvent } from "react";
 import Url from "./components/Url";
+import Entry from "./components/Entry";
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -126,48 +128,7 @@ function App() {
                   details.map((category: any) => (
                     <li key={nanoid()}>
                       <h2>{category.name}</h2>
-                      <ul>
-                        {category.data &&
-                          category.data.map((entry: any) => (
-                            <li key={nanoid()} className="entry">
-                              <div className="entry__icon">
-                                {entry.approved ? (
-                                  <i className="fa-solid fa-check" style={{ color: "green" }}></i>
-                                ) : (
-                                  <i className="fa-solid fa-xmark" style={{ color: "red" }}></i>
-                                )}
-                              </div>
-
-                              <div className="entry__main">
-                                <span className="entry__text">{`${entry.text.split("$")[0]}`}</span>
-
-                                <span className="entry__tag" style={entry.approved ? {} : { color: "red" }}>
-                                  {entry.tagEnd === '">' ? (
-                                    <span className="tag-start-bg">
-                                      {entry.tagStart.split("$")[0]}
-                                      <span style={{ color: "#d78c66" }}>{entry.tagStart.split("$")[1]}</span>
-                                      {entry.tagStart.split("$")[2]}
-                                    </span>
-                                  ) : (
-                                    <span className="tag-start-bg">{entry.tagStart}</span>
-                                  )}
-
-                                  <span className="entry__responsiveWrapper">
-                                    <span
-                                      className="entry__textResponsive tag-content-bg"
-                                      style={entry.tagEnd === '">' ? { color: "#d78c66" } : { color: "white" }}
-                                    >
-                                      {entry.elementContent}
-                                    </span>
-                                  </span>
-
-                                  <span className="tag-end-bg">{entry.tagEnd}</span>
-                                </span>
-                                <span className="entry__text">{`${entry.text.split("$")[1]} `}</span>
-                              </div>
-                            </li>
-                          ))}
-                      </ul>
+                      <ul>{category.data && category.data.map((entry: EntryInterface) => <Entry entry={entry} />)}</ul>
                     </li>
                   ))}
               </ul>
