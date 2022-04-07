@@ -1,0 +1,30 @@
+.font-xl {
+  font-size: 50px;
+}
+
+.btn-primary {
+  transition: 200ms;
+  border-radius: 10px;
+  padding: 0 24px;
+  white-space: nowrap;
+  cursor: pointer;
+  &:after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(
+      circle farthest-corner at 50% 50%,
+      #2e8972,
+      #285d50 80%
+    );
+    z-index: -1;
+    border-radius: 10px;
+    opacity: 1;
+  }
+  &:hover {
+    background: #0f434a;
+  }
+}

@@ -1,0 +1,239 @@
+@import "utilities";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #0f434a;
+  --light-gray: #f6f7f7;
+}
+
+ul {
+  list-style: none;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.audit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 64px;
+  color: var(--primary-color);
+  &__wrapper {
+    margin-top: 128px;
+    padding: 32px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    max-width: 1440px;
+    height: 500px;
+    width: 100%;
+    background: var(--light-gray);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+  }
+}
+
+.url {
+  max-width: 1200px;
+  margin: 0 auto;
+  &__inputWrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 45px;
+    margin: 32px 0;
+    display: flex;
+    &--error {
+      input {
+        border-color: rgba(255, 0, 0, 0.5) !important;
+      }
+      &:after {
+        // border-radius: 10px;
+        transition: 200ms;
+        position: absolute;
+        bottom: -70px;
+        width: 200px;
+        height: 50px;
+        padding-top: 12px;
+        display: grid;
+        place-items: center;
+        background: var(--primary-color);
+        color: white;
+        content: "Vänligen ange en giltig webbaddress";
+        animation: fadeIn 200ms;
+        clip-path: polygon(50% 0, 60% 15%, 100% 15%, 100% 100%, 0 100%, 0 15%, 40% 15%);
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    }
+  }
+  &__input {
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    padding: 0 12px;
+    outline: none;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.8);
+    &:focus {
+      border-color: #2e8972;
+    }
+  }
+  &__button {
+    position: relative;
+    // width: 120px;
+    height: 100%;
+    margin-left: 12px;
+    background: transparent;
+    // background: var(--primary-color);
+    color: white;
+    font-size: 18px;
+    outline: none;
+    border: none;
+    // z-index: 1;
+  }
+}
+
+.result {
+  text-align: start;
+  width: 100%;
+  height: 100%;
+}
+
+.entry {
+  display: flex;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 10px;
+  align-items: center;
+  &__icon {
+    margin-right: 6px;
+    font-size: 20px;
+  }
+  &__main {
+    display: flex;
+    width: 100%;
+  }
+  &__text {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  &__tag {
+    position: relative;
+    display: flex;
+    white-space: nowrap;
+    flex-grow: 1;
+    color: #5db0d7;
+  }
+  .tag-start-bg {
+    padding: 4px 0 4px 4px;
+    border-radius: 4px 0 0px 4px;
+    background: #202124;
+  }
+  .tag-content-bg {
+    padding: 4px 0;
+    background: #202124;
+  }
+  .tag-end-bg {
+    padding: 4px 4px 4px 0;
+    border-radius: 0 4px 4px 0;
+    background: #202124;
+  }
+
+  &__responsiveWrapper {
+    display: flex;
+    flex-grow: 1;
+    width: 0;
+    max-width: fit-content;
+  }
+  &__textResponsive {
+    // display: flex;
+    // width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+// Loader
+.loading {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  text-align: start;
+  &__urlAnchor {
+    text-decoration: none;
+    color: unset;
+  }
+  &__urlText {
+    opacity: 0.5;
+    display: inline;
+  }
+
+  .loaderContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .loader {
+    position: relative;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, transparent 40%, #0f434a);
+    animation: move 0.8s linear infinite;
+  }
+  .loader::before {
+    position: absolute;
+    content: "";
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    background: var(--light-gray);
+    border-radius: 50%;
+    z-index: 2;
+  }
+  .loader::after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(45deg, transparent 40%, #0f434a);
+    filter: blur(20px);
+  }
+  @keyframes move {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
