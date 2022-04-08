@@ -1,17 +1,8 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-import { pipeEntries } from "../utils.js";
-export const scripts = (page) => __awaiter(void 0, void 0, void 0, function* () {
+import { pipeEntries } from "../utils/utils.js";
+export const scripts = async (page) => {
     // Get all scripts
-    const scripts = yield getScripts(page);
-    const data = yield pipeEntries([
+    const scripts = await getScripts(page);
+    const data = await pipeEntries([
         hasHubspotTracking(scripts),
         hasGoogleAnalyticsTracking(scripts),
         hasGoogleTagManagerTracking(scripts),
@@ -38,7 +29,7 @@ export const scripts = (page) => __awaiter(void 0, void 0, void 0, function* () 
     //     error: "",
     //   },
     // ];
-});
+};
 const hasHubspotTracking = (scripts) => {
     const id = "hs-script-loader";
     const src = "js.hs-scripts.com";

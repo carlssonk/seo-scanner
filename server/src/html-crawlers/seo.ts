@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
-import { Entry } from "../interfaces.js";
-import { pipeEntries } from "../utils.js";
+import { Entry, Error } from "../interfaces.js";
+import { pipeEntries } from "../utils/utils.js";
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -15,6 +15,7 @@ export const seo = async (page) => {
     hasMetaDescription(page),
     hasMetaViewport(page),
     hasAltAttributes(page),
+    skippedHeadingLevel(page),
   ]);
 
   return data;
@@ -45,7 +46,69 @@ const hasOneH1 = async (page: puppeteer.Page): Promise<Entry> => {
   return object;
 };
 
+const skippedHeadingLevel = async (page: puppeteer.Page): Promise<Entry> => {
+  // "Import" getSelector function
+  await page.addScriptTag({ path: "dist/utils/getSelector.js" });
+
+  const headings = JSON.parse(
+    await page.evaluate(async (): Promise<string> => {
+      const headings = [...document.querySelectorAll("h1, h2, h3, h4, h5, h6")];
+      const promises = headings.map(async (heading) => {
+        return {
+          tagName: heading.tagName,
+          level: parseInt(heading.tagName.slice(1)),
+          selector: getSelector(heading),
+          outerHTML: heading.outerHTML,
+        };
+      });
+
+      const res = await Promise.all(promises);
+      return JSON.stringify(res);
+    })
+  );
+
+  const createError: Error = {
+    auditType: "HEADING",
+    text: "Hoppade över rubriknivå",
+    helpText: "Ordnade rubriker hjälper besökare att förstå sidstrukturen och förbättra sidnavigeringen",
+    elements: [],
+  };
+
+  for (let i = 1; i < headings.length; i++) {
+    if (headings[i].level > headings[i - 1].level + 1) {
+      const elementHandler = await page.$(headings[i].selector);
+      let screenshot: string | Buffer = "";
+
+      try {
+        screenshot = await elementHandler.screenshot({ encoding: "base64" });
+      } catch {}
+
+      createError.elements.push({
+        previous: headings[i - 1].tagName,
+        current: headings[i].tagName,
+        expected: `H${headings[i - 1].level + 1}`,
+        outerHTML: headings[i].outerHTML,
+        screenshot,
+      });
+    }
+  }
+
+  const approved = createError.elements.length === 0;
+  const object: Entry = {
+    approved,
+    elementContent: "",
+    tagStart: "",
+    tagEnd: "",
+    text: "Sidan har rätt rubrikstruktur",
+    error: !approved ? createError : "",
+  };
+  return object;
+};
+
 const hasAltAttributes = async (page: puppeteer.Page): Promise<Entry> => {
+  // "Import" getSelector function
+  await page.addScriptTag({ path: "dist/utils/getSelector.js" });
+
   const altTags = JSON.parse(
     await page.evaluate((): string => {
       const images = document.querySelectorAll("img");
@@ -61,43 +124,19 @@ const hasAltAttributes = async (page: puppeteer.Page): Promise<Entry> => {
           };
         })
       );
-
-      function getSelector(elm) {
-        if (elm.tagName === "BODY") return "BODY";
-        const names = [];
-        while (elm.parentElement && elm.tagName !== "BODY") {
-          if (elm.id) {
-            names.unshift("#" + elm.getAttribute("id")); // getAttribute, because `elm.id` could also return a child element with name "id"
-            break; // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
-          } else {
-            let c = 1,
-              e = elm;
-            for (; e.previousElementSibling; e = e.previousElementSibling, c++);
-            names.unshift(elm.tagName + ":nth-child(" + c + ")");
-          }
-          elm = elm.parentElement;
-        }
-        return names.join(">");
-      }
     })
   );
 
-  const createError = async (): Promise<{ text: string; elements: any[] }> => {
-    let error = { text: "", elements: [] };
+  const createError = async (): Promise<Error> => {
+    let error = { auditType: "ALT", text: "", helpText: "", elements: [] };
 
     for (let i = 0; i < altTags.length; i++) {
-      // if (altTags[i].approved) continue;
+      if (altTags[i].approved) continue;
       const elementHandler = await page.$(altTags[i].selector);
-      let screenshot: string | Buffer;
+      let screenshot: string | Buffer = "";
       try {
         screenshot = await elementHandler.screenshot({ encoding: "base64" });
-      } catch {
-        error.elements.push({
-          outerHTML: altTags[i].outerHTML,
-          screenshot: null,
-        });
-        continue;
-      }
+      } catch {}
 
       error.elements.push({ outerHTML: altTags[i].outerHTML, screenshot });
     }
@@ -113,7 +152,7 @@ const hasAltAttributes = async (page: puppeteer.Page): Promise<Entry> => {
     tagStart: '[alt="..."]',
     tagEnd: "",
     text: "Sidan saknar inga",
-    error: true ? await createError() : "",
+    error: !approved ? await createError() : "",
   };
   return object;
 };

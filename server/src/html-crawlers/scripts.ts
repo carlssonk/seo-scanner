@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 import { Entry, scriptsInterface } from "../interfaces.js";
-import { pipeEntries } from "../utils.js";
+import { pipeEntries } from "../utils/utils.js";
 
 export const scripts = async (page) => {
   // Get all scripts

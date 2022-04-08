@@ -3,6 +3,7 @@ import { requestHandler } from "./requests.js";
 import express, { Request, Response } from "express";
 import { seo } from "./html-crawlers/seo.js";
 import { scripts } from "./html-crawlers/scripts.js";
+// import { getSelector } from "./utils/utils.js";
 const app = express();
 const PORT = 8080;
 
@@ -14,16 +15,13 @@ interface Query {
   url: string;
 }
 
-app.get(
-  "/api/audit",
-  async (req: Request<{}, {}, {}, Query>, res: Response) => {
-    const { url } = req.query;
+app.get("/api/audit", async (req: Request<{}, {}, {}, Query>, res: Response) => {
+  const { url } = req.query;
 
-    const data = await init(url);
+  const data = await init(url);
 
-    res.json({ data });
-  }
-);
+  res.json({ data });
+});
 
 interface browserInterface {
   [x: string]: any;
@@ -43,7 +41,15 @@ const init = async (url: string): Promise<any> => {
   // await page.goto(URL);
   let result = [];
 
+  // So we can use page.on("request")
   await page.setRequestInterception(true);
+  // So we can use function inside page.evaluate
+  // var functionToInject = function () {
+  //   return window.navigator.appName;
+  // };
+  // await page.exposeFunction("getSelector", getSelector);
+  // await page.addScriptTag({ path: "src/utils/getSelector.ts" });
+  // await page.addScriptTag({ path: "dist/utils/getSelector.js" });
 
   // Initialize accumilator
   const requestAccumilator = requestHandler();
@@ -93,7 +99,7 @@ const init = async (url: string): Promise<any> => {
   const seoDetails = await seo(page);
   const scriptDetails = await scripts(page);
 
-  console.log(seoDetails);
+  // console.log(seoDetails);
   // Close browser
   await browser.close();
 

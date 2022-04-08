@@ -143,7 +143,7 @@ body,
     }
 
     .altErrorEntry {
-      padding: 12px 0;
+      padding: 24px 0;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
       &:nth-child(1) {
@@ -158,9 +158,6 @@ body,
 
       &__imageWrapper {
         margin-bottom: 12px;
-        display: grid;
-        place-items: center;
-        max-width: 200px;
         height: 100px;
         background: rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(0, 0, 0, 0.1);

@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { nanoid } from "nanoid";
 import { Entry as EntryInterface } from "../../../server/src/interfaces";
 import EntryError from "./EntryError";
-
-const ERROR_COLOR = "rgb(255, 100, 100)";
-const WARNING_COLOR = "orange";
+import { ERROR_COLOR, WARNING_COLOR } from "../utils";
 
 function Entry({ entry }: { entry: EntryInterface }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,9 +32,9 @@ function Entry({ entry }: { entry: EntryInterface }) {
                 <span style={{ color: setColor(entry, "#d78c66") }}>{entry.tagStart.split("$")[1]}</span>
                 {entry.tagStart.split("$")[2]}
               </span>
-            ) : (
+            ) : entry.tagStart ? (
               <span className="tag-start-bg">{entry.tagStart}</span>
-            )}
+            ) : null}
 
             <span className="entry__responsiveWrapper">
               <span
@@ -47,11 +45,11 @@ function Entry({ entry }: { entry: EntryInterface }) {
               </span>
             </span>
 
-            <span className="tag-end-bg">{entry.tagEnd}</span>
+            {entry.tagStart ? <span className="tag-end-bg">{entry.tagEnd}</span> : null}
           </span>
         </div>
       </div>
-      {true ? <EntryError entry={entry} isOpen={isOpen} /> : null}
+      {true ? <EntryError error={entry.error} isOpen={isOpen} /> : null}
     </li>
   );
 }

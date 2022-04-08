@@ -1,38 +1,38 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import puppeteer from "puppeteer";
 import { requestHandler } from "./requests.js";
 import express from "express";
 import { seo } from "./html-crawlers/seo.js";
 import { scripts } from "./html-crawlers/scripts.js";
+// import { getSelector } from "./utils/utils.js";
 const app = express();
 const PORT = 8080;
 // app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.get("/api/audit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/api/audit", async (req, res) => {
     const { url } = req.query;
-    const data = yield init(url);
+    const data = await init(url);
     res.json({ data });
-}));
+});
 // type scriptsInterface = scriptObjectInterface[];
 let URL = "";
 let browser = null;
-const init = (url) => __awaiter(void 0, void 0, void 0, function* () {
+const init = async (url) => {
     URL = url;
     // Create browser, open page and go to url
-    browser = yield puppeteer.launch();
-    const page = yield browser.newPage();
+    browser = await puppeteer.launch();
+    const page = await browser.newPage();
     // await page.goto(URL);
     let result = [];
-    yield page.setRequestInterception(true);
+    // So we can use page.on("request")
+    await page.setRequestInterception(true);
+    // So we can use function inside page.evaluate
+    // var functionToInject = function () {
+    //   return window.navigator.appName;
+    // };
+    // await page.exposeFunction("getSelector", getSelector);
+    // await page.addScriptTag({ path: "src/utils/getSelector.ts" });
+    // await page.addScriptTag({ path: "dist/utils/getSelector.js" });
     // Initialize accumilator
     const requestAccumilator = requestHandler();
     // Add listener
@@ -40,7 +40,7 @@ const init = (url) => __awaiter(void 0, void 0, void 0, function* () {
     // Go to page
     // const start = clock(0);
     const tic = Date.now();
-    yield page.goto(URL, { waitUntil: "networkidle2" });
+    await page.goto(URL, { waitUntil: "networkidle2" });
     const pageFullyLoaded = Date.now() - tic;
     // const metrics = await page.evaluate(() => JSON.stringify(window.performance));
     // const gitMetrics = await page.metrics();
@@ -69,11 +69,11 @@ const init = (url) => __awaiter(void 0, void 0, void 0, function* () {
     // totalBytesKb: 1403.5
     // unusedBytesKb: 1339.8
     // SCRIPTS & SEO
-    const seoDetails = yield seo(page);
-    const scriptDetails = yield scripts(page);
-    console.log(seoDetails);
+    const seoDetails = await seo(page);
+    const scriptDetails = await scripts(page);
+    // console.log(seoDetails);
     // Close browser
-    yield browser.close();
+    await browser.close();
     return {
         requestDetails,
         totalPageSize,
@@ -81,7 +81,7 @@ const init = (url) => __awaiter(void 0, void 0, void 0, function* () {
         scriptDetails,
         pageFullyLoaded,
     };
-});
+};
 // function clock(start: any) {
 //   if (!start) return process.hrtime();
 //   var end = process.hrtime(start);

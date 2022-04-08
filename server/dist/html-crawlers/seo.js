@@ -1,28 +1,20 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-import { pipeEntries } from "../utils.js";
+import { pipeEntries } from "../utils/utils.js";
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
-export const seo = (page) => __awaiter(void 0, void 0, void 0, function* () {
+export const seo = async (page) => {
     // Scan for HTML TAGS
     // const funcs = [await hasOneH1(page),]
-    const data = yield pipeEntries([
+    const data = await pipeEntries([
         hasTitle(page),
         hasOneH1(page),
         hasMetaDescription(page),
         hasMetaViewport(page),
         hasAltAttributes(page),
+        skippedHeadingLevel(page),
     ]);
     return data;
-});
-const hasOneH1 = (page) => __awaiter(void 0, void 0, void 0, function* () {
-    const h1s = JSON.parse(yield page.evaluate(() => {
+};
+const hasOneH1 = async (page) => {
+    const h1s = JSON.parse(await page.evaluate(() => {
         const h1s = [...document.querySelectorAll("h1")];
         return JSON.stringify(h1s.map((x) => {
             return x.innerText;
@@ -38,9 +30,61 @@ const hasOneH1 = (page) => __awaiter(void 0, void 0, void 0, function* () {
         error: !approved ? `Vi hitta ${h1s.length} h1 rubriker på sidan.` : "",
     };
     return object;
-});
-const hasAltAttributes = (page) => __awaiter(void 0, void 0, void 0, function* () {
-    const altTags = JSON.parse(yield page.evaluate(() => {
+};
+const skippedHeadingLevel = async (page) => {
+    // "Import" getSelector function
+    await page.addScriptTag({ path: "dist/utils/getSelector.js" });
+    const headings = JSON.parse(await page.evaluate(async () => {
+        const headings = [...document.querySelectorAll("h1, h2, h3, h4, h5, h6")];
+        const promises = headings.map(async (heading) => {
+            return {
+                tagName: heading.tagName,
+                level: parseInt(heading.tagName.slice(1)),
+                selector: getSelector(heading),
+                outerHTML: heading.outerHTML,
+            };
+        });
+        const res = await Promise.all(promises);
+        return JSON.stringify(res);
+    }));
+    const createError = {
+        auditType: "HEADING",
+        text: "Hoppade över rubriknivå",
+        helpText: "Ordnade rubriker hjälper besökare att förstå sidstrukturen och förbättra sidnavigeringen",
+        elements: [],
+    };
+    for (let i = 1; i < headings.length; i++) {
+        if (headings[i].level > headings[i - 1].level + 1) {
+            const elementHandler = await page.$(headings[i].selector);
+            let screenshot = "";
+            try {
+                screenshot = await elementHandler.screenshot({ encoding: "base64" });
+            }
+            catch (_a) { }
+            createError.elements.push({
+                previous: headings[i - 1].tagName,
+                current: headings[i].tagName,
+                expected: `H${headings[i - 1].level + 1}`,
+                outerHTML: headings[i].outerHTML,
+                screenshot,
+            });
+        }
+    }
+    const approved = createError.elements.length === 0;
+    const object = {
+        approved,
+        elementContent: "",
+        tagStart: "",
+        tagEnd: "",
+        text: "Sidan har rätt rubrikstruktur",
+        error: !approved ? createError : "",
+    };
+    return object;
+};
+const hasAltAttributes = async (page) => {
+    // "Import" getSelector function
+    await page.addScriptTag({ path: "dist/utils/getSelector.js" });
+    const altTags = JSON.parse(await page.evaluate(() => {
         const images = document.querySelectorAll("img");
         const areas = document.querySelectorAll("area");
         const inputs = document.querySelectorAll("input[type=image]");
@@ -51,47 +95,23 @@ const hasAltAttributes = (page) => __awaiter(void 0, void 0, void 0, function* (
                 approved: tag.hasAttribute("alt"),
             };
         }));
-        function getSelector(elm) {
-            if (elm.tagName === "BODY")
-                return "BODY";
-            const names = [];
-            while (elm.parentElement && elm.tagName !== "BODY") {
-                if (elm.id) {
-                    names.unshift("#" + elm.getAttribute("id")); // getAttribute, because `elm.id` could also return a child element with name "id"
-                    break; // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
-                }
-                else {
-                    let c = 1, e = elm;
-                    for (; e.previousElementSibling; e = e.previousElementSibling, c++)
-                        ;
-                    names.unshift(elm.tagName + ":nth-child(" + c + ")");
-                }
-                elm = elm.parentElement;
-            }
-            return names.join(">");
-        }
     }));
-    const createError = () => __awaiter(void 0, void 0, void 0, function* () {
-        let error = { text: "", elements: [] };
+    const createError = async () => {
+        let error = { auditType: "ALT", text: "", helpText: "", elements: [] };
         for (let i = 0; i < altTags.length; i++) {
-            // if (altTags[i].approved) continue;
-            const elementHandler = yield page.$(altTags[i].selector);
-            let screenshot;
-            try {
-                screenshot = yield elementHandler.screenshot({ encoding: "base64" });
-            }
-            catch (_a) {
-                error.elements.push({
-                    outerHTML: altTags[i].outerHTML,
-                    screenshot: null,
-                });
+            if (altTags[i].approved)
                 continue;
+            const elementHandler = await page.$(altTags[i].selector);
+            let screenshot = "";
+            try {
+                screenshot = await elementHandler.screenshot({ encoding: "base64" });
             }
+            catch (_a) { }
             error.elements.push({ outerHTML: altTags[i].outerHTML, screenshot });
         }
         error.text = `Sidan saknar alt attribut på ${error.elements.length} element`;
         return error;
-    });
+    };
     const approved = altTags.every((tag) => tag.approved);
     const object = {
         approved,
@@ -99,12 +119,12 @@ const hasAltAttributes = (page) => __awaiter(void 0, void 0, void 0, function* (
         tagStart: '[alt="..."]',
         tagEnd: "",
         text: "Sidan saknar inga",
-        error: true ? yield createError() : "",
+        error: !approved ? await createError() : "",
     };
     return object;
-});
-const hasTitle = (page) => __awaiter(void 0, void 0, void 0, function* () {
-    const title = yield page.evaluate(() => {
+};
+const hasTitle = async (page) => {
+    const title = await page.evaluate(() => {
         const title = document.querySelector("title");
         return title ? title.innerText : "";
     });
@@ -118,9 +138,9 @@ const hasTitle = (page) => __awaiter(void 0, void 0, void 0, function* () {
         error: !approved ? "Sidan saknar en titel." : "",
     };
     return object;
-});
-const hasMetaDescription = (page) => __awaiter(void 0, void 0, void 0, function* () {
-    const description = yield page.evaluate(() => {
+};
+const hasMetaDescription = async (page) => {
+    const description = await page.evaluate(() => {
         const description = document.querySelector("meta[name=description]");
         return description ? description.content : "";
     });
@@ -134,9 +154,9 @@ const hasMetaDescription = (page) => __awaiter(void 0, void 0, void 0, function*
         error: !approved ? "Sidan saknar en beskrivning." : "",
     };
     return object;
-});
-const hasMetaViewport = (page) => __awaiter(void 0, void 0, void 0, function* () {
-    const viewport = yield page.evaluate(() => {
+};
+const hasMetaViewport = async (page) => {
+    const viewport = await page.evaluate(() => {
         const viewport = document.querySelector("meta[name=viewport]");
         return viewport ? viewport.content : "";
     });
@@ -150,4 +170,4 @@ const hasMetaViewport = (page) => __awaiter(void 0, void 0, void 0, function* ()
         error: !approved ? "Sidan saknar en viewport." : "",
     };
     return object;
-});
+};

@@ -1,10 +1,12 @@
+export type Error = string | { auditType: string; text: string; helpText: string; elements: any[] };
+
 export interface Entry {
   approved: boolean;
   elementContent: string;
   tagStart: string;
   tagEnd: string;
   text: string;
-  error: string | { text: string; elements: any[] };
+  error: Error;
 }
 
 export interface scriptsInterface {

@@ -3,6 +3,10 @@
   font-size: 50px;
 }
 
+.mbottom-m {
+  margin-bottom: 12px;
+}
+
 .btn-primary {
   -webkit-transition: 200ms;
   transition: 200ms;
@@ -215,7 +219,7 @@ body,
 }
 
 .entry .entryError .altErrorEntry {
-  padding: 12px 0;
+  padding: 24px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -232,10 +236,6 @@ body,
 
 .entry .entryError .altErrorEntry__imageWrapper {
   margin-bottom: 12px;
-  display: -ms-grid;
-  display: grid;
-  place-items: center;
-  max-width: 200px;
   height: 100px;
   background: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.1);
