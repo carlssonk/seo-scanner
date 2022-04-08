@@ -60,6 +60,10 @@ body,
   font-family: Arial, Helvetica, sans-serif;
 }
 
+body {
+  overflow-y: scroll;
+}
+
 .audit {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -88,7 +92,6 @@ body,
           align-items: center;
   text-align: center;
   max-width: 1440px;
-  height: 500px;
   width: 100%;
   background: var(--light-gray);
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -260,6 +263,13 @@ body,
 .entry__icon {
   margin-right: 6px;
   font-size: 20px;
+}
+
+.entry__chevron {
+  width: 40px;
+  display: -ms-grid;
+  display: grid;
+  place-items: center;
 }
 
 .entry__main {

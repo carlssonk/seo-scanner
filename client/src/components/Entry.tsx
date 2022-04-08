@@ -13,7 +13,11 @@ function Entry({ entry }: { entry: EntryInterface }) {
 
   return (
     <li key={nanoid()} className="entry">
-      <div className="entryWrapper" onClick={() => setIsOpen((bool) => !bool)}>
+      <div
+        style={entry.approved ? { cursor: "default" } : {}}
+        className="entryWrapper"
+        onClick={() => setIsOpen((bool) => !bool)}
+      >
         <div className="entry__icon">
           {entry.approved ? (
             <i className="fa-solid fa-check" style={{ color: "green" }}></i>
@@ -48,8 +52,13 @@ function Entry({ entry }: { entry: EntryInterface }) {
             {entry.tagStart ? <span className="tag-end-bg">{entry.tagEnd}</span> : null}
           </span>
         </div>
+        {!entry.approved ? (
+          <div className="entry__chevron">
+            <i className="fa-solid fa-chevron-down" style={isOpen ? { transform: "rotateX(180deg)" } : {}}></i>
+          </div>
+        ) : null}
       </div>
-      {true ? <EntryError error={entry.error} isOpen={isOpen} /> : null}
+      {!entry.approved ? <EntryError error={entry.error} isOpen={isOpen} /> : null}
     </li>
   );
 }

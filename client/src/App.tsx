@@ -54,8 +54,8 @@ function App() {
       const { data } = await res.json();
       setData(data);
       const pageDetails = [
-        { name: "SEO", data: data.seoDetails },
-        { name: "SCRIPT", data: data.scriptDetails },
+        { name: "SEO", data: data.seoDetails.sort((a: any, b: any) => a.approved - b.approved) },
+        { name: "SCRIPT", data: data.scriptDetails.sort((a: any, b: any) => a.approved - b.approved) },
       ];
       setDetails(pageDetails);
       console.log(data);
