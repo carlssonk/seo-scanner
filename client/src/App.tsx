@@ -7,17 +7,23 @@ import { nanoid } from "nanoid";
 import { FormEvent } from "react";
 import Url from "./components/Url";
 import Entry from "./components/Entry";
+import SummaryEntry from "./components/SummaryEntry";
+import Requests from "./components/summary/Requests";
+
+const KONTAKT_URL = "https://www.ngine.com/kontakta-oss";
 
 function App() {
+  const summaryRef = useRef<HTMLDivElement[]>([]);
   // const [count, setCount] = useState(0)
   const [url, setUrl] = useState("");
   const [urlIsValid, setUrlIsValid] = useState(true);
   const [flowState, setFlowState] = useState(0);
 
   // All data
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
   // Formatted data
-  const [summary, setSummary] = useState(null);
+  const [summary, setSummary] = useState<any[]>([]);
+  // const [requests, setRequests] = useState<any[]>([]);
   // Formatted data
   const [details, setDetails]: any = useState(null);
   const entryRefs = useRef([
@@ -30,6 +36,10 @@ function App() {
   // entryRefs
   // console.log(details);
   // }, [details]);
+
+  useEffect(() => {
+    summaryRef.current = summaryRef.current.slice(0, summary.length);
+  }, [summary]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
@@ -53,12 +63,31 @@ function App() {
       setFlowState(2);
       const { data } = await res.json();
       setData(data);
+      // console.log(data);
+
+      // : [string: any[]]
+      const reqDetailsArray: [string, any][] = Object.entries(data.requestDetails);
+      // console.log(reqDetailsArray);
+      const formattedRequests = reqDetailsArray.map(([key, val]) => {
+        return [
+          val,
+          { type: key, totalSize: val.reduce((acc: any, cur: any) => acc + cur.transferSize, 0), showText: true },
+        ];
+      });
+
+      const reqDetailsSize = formattedRequests.sort((a, b) => b[1].totalSize - a[1].totalSize);
+      const reqDetailsRequests = formattedRequests.sort((a, b) => b[0].length - a[0].length);
+
       const pageDetails = [
         { name: "SEO", data: data.seoDetails.sort((a: any, b: any) => a.approved - b.approved) },
         { name: "SCRIPT", data: data.scriptDetails.sort((a: any, b: any) => a.approved - b.approved) },
       ];
+
+      console.log(reqDetailsSize);
+      console.log(reqDetailsRequests);
+
       setDetails(pageDetails);
-      console.log(data);
+      setSummary(formattedRequests);
     }
   };
 
@@ -83,6 +112,17 @@ function App() {
       "i"
     ); // fragment locator
     return !!pattern.test(str);
+  };
+
+  const formatTotalSize = (number: number) => {
+    const kb = number / 1000;
+    const mb = kb / 1000;
+
+    return kb < 1000 ? `${Math.round(kb)}KB` : `${mb.toFixed(2)}MB`;
+  };
+
+  const objIsEmpty = (obj: object) => {
+    return Object.keys(obj).length === 0;
   };
 
   return (
@@ -114,24 +154,60 @@ function App() {
 
         {flowState === 2 && (
           <div className="result">
-            <div>
-              <h1>Ngine Score: 100 / 100</h1>
+            <div className="goBack" onClick={() => location.reload()}>
+              <i className="fa-solid fa-arrow-left"></i>
+              <span>Gör om testet</span>
             </div>
-            <div>
-              <h1>Sammanfatting</h1>
-              {/* <div></div> */}
+            <h2 className="primary-h2">Sammanfattning</h2>
+            <div className="summary__grid">
+              <div className="boxStyle">
+                <ul className="summary__list">
+                  <li className="summary__listItem">
+                    <div className="summary__listKey">Ngine Score</div>
+                    <div className="summary__listValue">100 / 100</div>
+                  </li>
+                  <li className="summary__listItem summary__listItem--column">
+                    <div className="summary__listKey">Sammanfattning</div>
+                    <div className="summary__listValue summary__listValue--bottom">
+                      <div>
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum vitae nulla enim ducimus minima
+                        quod asperiores, vel dolor porro libero non quis fugiat? Nostrum similique ullam quae esse
+                        perferendis nesciunt magnam deserunt natus tenetur pariatur, in omnis? Magnam saepe quos
+                        laudantium, exercitationem nisi reiciendis corporis a excepturi, quo vitae autem?
+                      </div>
+
+                      <button
+                        className="summary__button btn-primary"
+                        onClick={() => (window.location.href = KONTAKT_URL)}
+                      >
+                        Kontakta oss
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div className="boxStyle">Total Laddninstid; Total sidstorlek; totala sidoförfrågningar</div>
+              <Requests data={data} summary={summary} formatTotalSize={formatTotalSize} setSummary={setSummary} />
             </div>
-            <div>
-              <h1>Detaljer</h1>
-              <ul>
-                {details &&
-                  details.map((category: any) => (
-                    <li key={nanoid()}>
-                      <h2>{category.name}</h2>
-                      <ul>{category.data && category.data.map((entry: EntryInterface) => <Entry entry={entry} />)}</ul>
-                    </li>
-                  ))}
-              </ul>
+            <h2 className="primary-h2">Detaljer</h2>
+            <ul>
+              {details &&
+                details.map((category: any) => (
+                  <li key={nanoid()} className="boxStyle details__listItem">
+                    <h3>{category.name}</h3>
+                    <ul className="details__entryList">
+                      {category.data && category.data.map((entry: EntryInterface) => <Entry entry={entry} />)}
+                    </ul>
+                  </li>
+                ))}
+            </ul>
+            <h2 className="primary-h2">
+              <span>Kontakta oss</span>
+            </h2>
+            <div className="boxStyle">
+              <button className="btn-primary" onClick={() => (window.location.href = KONTAKT_URL)}>
+                Kontakta oss
+              </button>
             </div>
           </div>
         )}

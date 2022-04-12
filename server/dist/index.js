@@ -40,8 +40,13 @@ const init = async (url) => {
     // Go to page
     // const start = clock(0);
     const tic = Date.now();
+    let number = 0;
+    // const interval = setInterval(() => number++, 100);
     await page.goto(URL, { waitUntil: "networkidle2" });
     const pageFullyLoaded = Date.now() - tic;
+    // clearInterval(interval);
+    // console.log(number);
+    console.log("Seconds elapsed: " + pageFullyLoaded / 1000);
     // const metrics = await page.evaluate(() => JSON.stringify(window.performance));
     // const gitMetrics = await page.metrics();
     // const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
@@ -51,11 +56,11 @@ const init = async (url) => {
     const totalPageSize = requestDetailsArray.reduce((acc, cur) => {
         return acc + cur.transferSize;
     }, 0);
-    console.log(`Total Page Download Size - ${totalPageSize / 1000000}MB`);
-    console.log(`Total Page Requests - ${requestDetailsArray.length}`);
-    const javascriptSize = requestDetails["javascript"].reduce((acc, cur) => {
-        return acc + cur.transferSize;
-    }, 0);
+    // console.log(`Total Page Download Size - ${totalPageSize / 1000000}MB`);
+    // console.log(`Total Page Requests - ${requestDetailsArray.length}`);
+    // const javascriptSize = requestDetails["javascript"].reduce((acc, cur) => {
+    //   return acc + cur.transferSize;
+    // }, 0);
     // console.log(javascriptSize / 1000000);
     // console.log(requestDetails["javascript"].length);
     // console.log(requestDetails);
@@ -77,6 +82,7 @@ const init = async (url) => {
     return {
         requestDetails,
         totalPageSize,
+        totalPageRequests: requestAccumilator.totalRequests(),
         seoDetails,
         scriptDetails,
         pageFullyLoaded,

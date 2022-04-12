@@ -16,9 +16,13 @@ export const requestHandler = () => {
         font: [],
         other: [],
     };
+    let totalRequests = 0;
     return {
         details() {
             return requestDetails;
+        },
+        totalRequests() {
+            return totalRequests;
         },
         onRequest(request) {
             request_client({
@@ -33,6 +37,7 @@ export const requestHandler = () => {
                 const response_size = response_headers["content-length"];
                 const response_type = response_headers["content-type"];
                 const response_body = response.body;
+                totalRequests++;
                 // SET totalPageRequests
                 // HTML
                 if (response_type.includes("text/html")) {
@@ -40,8 +45,7 @@ export const requestHandler = () => {
                 }
                 // JS
                 // console.log(response_type);
-                if (response_type.includes("javascript") ||
-                    hasExtension(request_url, ".js")) {
+                if (response_type.includes("javascript") || hasExtension(request_url, ".js")) {
                     return addDetail("javascript");
                 }
                 // CSS

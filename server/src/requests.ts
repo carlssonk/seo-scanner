@@ -19,9 +19,14 @@ export const requestHandler = () => {
     other: [],
   };
 
+  let totalRequests = 0;
+
   return {
     details() {
       return requestDetails;
+    },
+    totalRequests() {
+      return totalRequests;
     },
 
     onRequest(request) {
@@ -38,6 +43,7 @@ export const requestHandler = () => {
           const response_type = response_headers["content-type"];
           const response_body = response.body;
 
+          totalRequests++;
           // SET totalPageRequests
 
           // HTML
@@ -48,10 +54,7 @@ export const requestHandler = () => {
 
           // JS
           // console.log(response_type);
-          if (
-            response_type.includes("javascript") ||
-            hasExtension(request_url, ".js")
-          ) {
+          if (response_type.includes("javascript") || hasExtension(request_url, ".js")) {
             return addDetail("javascript");
           }
 

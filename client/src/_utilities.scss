@@ -5,12 +5,27 @@
 .mbottom-m {
   margin-bottom: 12px;
 }
+.my-l {
+  margin: 32px 0;
+}
+
+.primary-h2 {
+  position: relative;
+  margin: 12px;
+}
 
 .btn-primary {
+  position: relative;
+  background: transparent;
+  color: white;
+  outline: none;
+  border: none;
   transition: 200ms;
   border-radius: 10px;
   padding: 0 24px;
   white-space: nowrap;
+  min-height: 40px;
+  font-size: 16px;
   cursor: pointer;
   &:after {
     position: absolute;
@@ -27,4 +42,13 @@
   &:hover {
     background: #0f434a;
   }
+}
+
+.boxStyle {
+  z-index: 1;
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  padding: 24px;
 }

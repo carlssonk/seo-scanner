@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Error as ErrorInterface } from "../../../server/src/interfaces";
 import { ERROR_COLOR } from "../utils";
+import { nanoid } from "nanoid";
 
 function EntryError({ error, isOpen }: { error: ErrorInterface; isOpen: boolean }) {
   const closedStyle = {
@@ -38,7 +39,7 @@ function EntryError({ error, isOpen }: { error: ErrorInterface; isOpen: boolean 
             <ul>
               {error.auditType === "ALT"
                 ? error.elements.map(({ outerHTML, screenshot }) => (
-                    <li className="altErrorEntry">
+                    <li key={nanoid()} className="altErrorEntry">
                       {screenshot ? (
                         <div className="altErrorEntry__imageWrapper">
                           <img src={`data:image/png;base64, ${screenshot}`}></img>

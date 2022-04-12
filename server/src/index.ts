@@ -18,7 +18,7 @@ interface Query {
 app.get("/api/audit", async (req: Request<{}, {}, {}, Query>, res: Response) => {
   const { url } = req.query;
 
-  const data = await init(url);
+  const data: { requestDetails: any[] } = await init(url);
 
   res.json({ data });
 });
@@ -58,8 +58,13 @@ const init = async (url: string): Promise<any> => {
   // Go to page
   // const start = clock(0);
   const tic = Date.now();
+  let number = 0;
+  // const interval = setInterval(() => number++, 100);
   await page.goto(URL, { waitUntil: "networkidle2" });
   const pageFullyLoaded = Date.now() - tic;
+  // clearInterval(interval);
+  // console.log(number);
+  console.log("Seconds elapsed: " + pageFullyLoaded / 1000);
   // const metrics = await page.evaluate(() => JSON.stringify(window.performance));
   // const gitMetrics = await page.metrics();
 
@@ -73,12 +78,12 @@ const init = async (url: string): Promise<any> => {
     return acc + cur.transferSize;
   }, 0);
 
-  console.log(`Total Page Download Size - ${totalPageSize / 1000000}MB`);
-  console.log(`Total Page Requests - ${requestDetailsArray.length}`);
+  // console.log(`Total Page Download Size - ${totalPageSize / 1000000}MB`);
+  // console.log(`Total Page Requests - ${requestDetailsArray.length}`);
 
-  const javascriptSize = requestDetails["javascript"].reduce((acc, cur) => {
-    return acc + cur.transferSize;
-  }, 0);
+  // const javascriptSize = requestDetails["javascript"].reduce((acc, cur) => {
+  //   return acc + cur.transferSize;
+  // }, 0);
   // console.log(javascriptSize / 1000000);
   // console.log(requestDetails["javascript"].length);
 
@@ -106,6 +111,7 @@ const init = async (url: string): Promise<any> => {
   return {
     requestDetails,
     totalPageSize,
+    totalPageRequests: requestAccumilator.totalRequests(),
     seoDetails,
     scriptDetails,
     pageFullyLoaded,
