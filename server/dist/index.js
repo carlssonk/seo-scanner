@@ -11,7 +11,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.get("/api/audit", async (req, res) => {
     const { url } = req.query;
-    const data = await init(url);
+    let data;
+    try {
+        data = await init(url);
+    }
+    catch (error) {
+        return res.json({ data: { error: "ERROR" } });
+    }
     res.json({ data });
 });
 // type scriptsInterface = scriptObjectInterface[];
@@ -33,7 +39,6 @@ const init = async (url) => {
     // await page.exposeFunction("getSelector", getSelector);
     // await page.addScriptTag({ path: "src/utils/getSelector.ts" });
     // await page.addScriptTag({ path: "dist/utils/getSelector.js" });
-    // Initialize accumilator
     const requestAccumilator = requestHandler();
     // Add listener
     page.on("request", (request) => requestAccumilator.onRequest(request));
@@ -74,7 +79,7 @@ const init = async (url) => {
     // totalBytesKb: 1403.5
     // unusedBytesKb: 1339.8
     // SCRIPTS & SEO
-    const seoDetails = await seo(page);
+    const seoDetails = await seo(page, requestDetails);
     const scriptDetails = await scripts(page);
     // console.log(seoDetails);
     // Close browser

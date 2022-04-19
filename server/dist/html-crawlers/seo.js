@@ -1,6 +1,6 @@
 import { pipeEntries } from "../utils/utils.js";
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
-export const seo = async (page) => {
+export const seo = async (page, requestDetails) => {
     // Scan for HTML TAGS
     // const funcs = [await hasOneH1(page),]
     const data = await pipeEntries([
@@ -10,8 +10,38 @@ export const seo = async (page) => {
         hasMetaViewport(page),
         hasAltAttributes(page),
         skippedHeadingLevel(page),
+        avoidLargeFileSize(page, requestDetails),
     ]);
     return data;
+};
+const avoidLargeFileSize = async (page, requestDetails) => {
+    const MAX_FILE_SIZE = 300 * 1000;
+    const error = {
+        auditType: "SIZE",
+        text: "",
+        helpText: "Stora nätverksnyttolaster kostar användarna riktiga pengar och är starkt korrelerade med långa laddningstider.",
+        elements: [],
+    };
+    const requests = Object.entries(requestDetails);
+    const formatRequests = requests.flatMap(([type, array]) => {
+        return [...array.map((x) => (Object.assign(Object.assign({}, x), { type })))];
+    });
+    for (let i = 0; i < formatRequests.length; i++) {
+        if (formatRequests[i].transferSize > MAX_FILE_SIZE) {
+            error.elements.push(formatRequests[i]);
+        }
+    }
+    error.text = `Sidan har ${error.elements.length} filer som borde reduceras i storlek`;
+    const approved = error.elements.length === 0;
+    const object = {
+        approved,
+        elementContent: "",
+        tagStart: "",
+        tagEnd: "",
+        text: "Sidan undviker stora nätverksnyttolaster",
+        error: !approved ? error : "",
+    };
+    return object;
 };
 const hasOneH1 = async (page) => {
     const h1s = JSON.parse(await page.evaluate(() => {
@@ -49,7 +79,7 @@ const skippedHeadingLevel = async (page) => {
     }));
     const createError = {
         auditType: "HEADING",
-        text: "Hoppade över rubriknivå",
+        text: "",
         helpText: "Ordnade rubriker hjälper besökare att förstå sidstrukturen och förbättra sidnavigeringen",
         elements: [],
     };
@@ -70,13 +100,15 @@ const skippedHeadingLevel = async (page) => {
             });
         }
     }
-    const approved = createError.elements.length === 0;
+    const errLength = createError.elements.length;
+    createError.text = `Hoppade över rubriknivå på ${errLength} ställen`;
+    const approved = errLength === 0;
     const object = {
         approved,
         elementContent: "",
         tagStart: "",
         tagEnd: "",
-        text: "Sidan har rätt rubrikstruktur",
+        text: "Sidan använder rätt rubrikstruktur",
         error: !approved ? createError : "",
     };
     return object;

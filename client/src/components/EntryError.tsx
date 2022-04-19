@@ -1,9 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Error as ErrorInterface } from "../../../server/src/interfaces";
-import { ERROR_COLOR } from "../utils";
+import { ERROR_COLOR, formatTotalSize } from "../utils";
 import { nanoid } from "nanoid";
+import SkippedHeadingEntry from "./SkippedHeadingEntry";
 
 function EntryError({ error, isOpen }: { error: ErrorInterface; isOpen: boolean }) {
+  const [outerHTMLS, setOuterHTMLS] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (typeof error === "object") {
+      setOuterHTMLS(error.elements.map((x) => x.outerHTML));
+    }
+  }, []);
+
   const closedStyle = {
     overflow: "hidden",
     height: 0,
@@ -37,6 +46,19 @@ function EntryError({ error, isOpen }: { error: ErrorInterface; isOpen: boolean 
             </div>
             <div>{error.helpText}</div>
             <ul>
+              {error.auditType === "SIZE"
+                ? error.elements.map(({ url, transferSize }) => (
+                    <li key={nanoid()} className="networkErrorEntry">
+                      <div className="networkErrorEntry__imageWrapper">
+                        <img src={url} alt="" />
+                      </div>
+                      <a className="networkErrorEntry__url" href="url">
+                        {url}
+                      </a>
+                      <div className="networkErrorEntry__size">{formatTotalSize(transferSize)}</div>
+                    </li>
+                  ))
+                : null}
               {error.auditType === "ALT"
                 ? error.elements.map(({ outerHTML, screenshot }) => (
                     <li key={nanoid()} className="altErrorEntry">
@@ -56,40 +78,24 @@ function EntryError({ error, isOpen }: { error: ErrorInterface; isOpen: boolean 
                   ))
                 : null}
               {error.auditType === "HEADING"
-                ? error.elements.map(({ previous, expected, current, outerHTML, screenshot }) => (
+                ? error.elements.map(({ previous, expected, current, outerHTML, screenshot }, index) => (
                     <li className="altErrorEntry">
-                      {screenshot ? (
+                      {/* {screenshot ? (
                         <div className="altErrorEntry__imageWrapper">
                           <img src={`data:image/png;base64, ${screenshot}`}></img>
                         </div>
-                      ) : null}
+                      ) : null} */}
                       <div className="mbottom-m">
                         Den föregående rubriknivån är {previous}, så nästa förväntade rubriknivå är {expected}
                       </div>
                       <b>Ändra på följande </b>
-                      <div className="entry__tag">
-                        <div style={{ color: ERROR_COLOR }} className="tag-start-bg">
-                          {seperateHTML(outerHTML)[0]}
-                        </div>
-                        <div className="entry__responsiveWrapper">
-                          <div style={{ color: "white" }} className="entry__textResponsive tag-content-bg">
-                            {seperateHTML(outerHTML)[1]}
-                          </div>
-                        </div>
-                        <div style={{ color: ERROR_COLOR }} className="tag-end-bg">
-                          {seperateHTML(outerHTML)[2]}
-                        </div>
-                      </div>
+                      <SkippedHeadingEntry outerHTML={outerHTML} isError={true} current={current} />
                       <b> till </b>
-                      <div className="entry__tag">
-                        <div className="tag-start-bg">{seperateHTML(replaceOuterTags(outerHTML, expected))[0]}</div>
-                        <div className="entry__responsiveWrapper">
-                          <div style={{ color: "white" }} className="entry__textResponsive tag-content-bg">
-                            {seperateHTML(outerHTML)[1]}
-                          </div>
-                        </div>
-                        <div className="tag-end-bg">{seperateHTML(replaceOuterTags(outerHTML, expected))[2]}</div>
-                      </div>
+                      <SkippedHeadingEntry
+                        outerHTML={replaceOuterTags(outerHTML, expected)}
+                        isError={false}
+                        current={expected}
+                      />
                     </li>
                   ))
                 : null}

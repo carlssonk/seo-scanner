@@ -5,6 +5,9 @@
 .mbottom-m {
   margin-bottom: 12px;
 }
+.my-s {
+  margin: 4px 0;
+}
 .my-l {
   margin: 32px 0;
 }
@@ -48,7 +51,8 @@
   z-index: 1;
   position: relative;
   background: white;
-  border-radius: 12px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  // border-radius: 12px;
+  // border: 2px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
   padding: 24px;
 }

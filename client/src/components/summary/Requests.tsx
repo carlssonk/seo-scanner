@@ -1,17 +1,8 @@
 import React from "react";
 import SummaryEntry from "../SummaryEntry";
+import { formatTotalSize } from "../../utils";
 
-function Requests({
-  data,
-  summary,
-  formatTotalSize,
-  setSummary,
-}: {
-  data: any;
-  summary: any;
-  formatTotalSize: any;
-  setSummary: any;
-}) {
+function Requests({ data, summary, setSummary }: { data: any; summary: any; setSummary: any }) {
   return (
     <div className="boxStyle" style={{ gridColumn: "1/3" }}>
       <div>

@@ -2,6 +2,7 @@ import { useState, useRef, createRef, useEffect } from "react";
 import { Entry as EntryInterface } from "../../server/src/interfaces";
 import { nanoid } from "nanoid";
 // import logo from './logo.svg'
+import { formatTotalSize } from "./utils";
 // import './App.css'
 
 import { FormEvent } from "react";
@@ -60,10 +61,16 @@ function App() {
           "Content-Type": "application/javascript",
         },
       });
-      setFlowState(2);
+
       const { data } = await res.json();
+      console.log(data);
+
+      if (data.error) {
+        return setFlowState(0);
+      }
+
+      setFlowState(2);
       setData(data);
-      // console.log(data);
 
       // : [string: any[]]
       const reqDetailsArray: [string, any][] = Object.entries(data.requestDetails);
@@ -112,13 +119,6 @@ function App() {
       "i"
     ); // fragment locator
     return !!pattern.test(str);
-  };
-
-  const formatTotalSize = (number: number) => {
-    const kb = number / 1000;
-    const mb = kb / 1000;
-
-    return kb < 1000 ? `${Math.round(kb)}KB` : `${mb.toFixed(2)}MB`;
   };
 
   const objIsEmpty = (obj: object) => {
@@ -186,8 +186,34 @@ function App() {
                   </li>
                 </ul>
               </div>
-              <div className="boxStyle">Total Laddninstid; Total sidstorlek; totala sidoförfrågningar</div>
-              <Requests data={data} summary={summary} formatTotalSize={formatTotalSize} setSummary={setSummary} />
+              <div className="boxStyle">
+                <ul className="summary__list">
+                  <li className="summary__listItem">
+                    <div className="summary__listKey">URL</div>
+                    <a href={url} target="_blank" className="summary__listValue">
+                      {url}
+                    </a>
+                  </li>
+                  <li className="summary__listItem">
+                    <div className="summary__listKey">Laddningstid</div>
+                    <div className="summary__listValue">{data && (data.pageFullyLoaded / 1000).toFixed(1)}s</div>
+                  </li>
+                  <li className="summary__listItem">
+                    <div className="summary__listKey">Sidstorlek</div>
+                    <div className="summary__listValue">{data && formatTotalSize(data.totalPageSize)}</div>
+                  </li>
+                  <li className="summary__listItem">
+                    <div className="summary__listKey">Godkända Granskningar</div>
+                    <div className="summary__listValue">
+                      {data &&
+                        data.scriptDetails.filter((x: any) => x.approved).length +
+                          data.seoDetails.filter((x: any) => x.approved).length}{" "}
+                      / {data && data.scriptDetails.length + data.seoDetails.length}
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <Requests data={data} summary={summary} setSummary={setSummary} />
             </div>
             <h2 className="primary-h2">Detaljer</h2>
             <ul>
