@@ -18,6 +18,7 @@ app.get("/api/audit", async (req, res) => {
     catch (error) {
         return res.json({ data: { error: "ERROR" } });
     }
+    console.log(data);
     res.json({ data });
 });
 // type scriptsInterface = scriptObjectInterface[];

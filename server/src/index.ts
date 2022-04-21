@@ -25,6 +25,7 @@ app.get("/api/audit", async (req: Request<{}, {}, {}, Query>, res: Response) => 
     return res.json({ data: { error: "ERROR" } });
   }
 
+  console.log(data);
   res.json({ data });
 });
 

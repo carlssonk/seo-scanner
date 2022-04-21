@@ -35,9 +35,11 @@ const avoidLargeFileSize = async (page, requestDetails) => {
     const approved = error.elements.length === 0;
     const object = {
         approved,
-        elementContent: "",
-        tagStart: "",
-        tagEnd: "",
+        outerHTML: "",
+        fallbackHTML: "",
+        // elementContent: "",
+        // tagStart: "",
+        // tagEnd: "",
         text: "Sidan undviker stora nätverksnyttolaster",
         error: !approved ? error : "",
     };
@@ -47,16 +49,18 @@ const hasOneH1 = async (page) => {
     const h1s = JSON.parse(await page.evaluate(() => {
         const h1s = [...document.querySelectorAll("h1")];
         return JSON.stringify(h1s.map((x) => {
-            return x.innerText;
+            return x.outerHTML;
         }));
     }));
     const approved = h1s.length === 1;
     const object = {
         approved,
-        elementContent: h1s[0],
-        tagStart: "<h1>",
-        tagEnd: "</h1>",
-        text: "Sidan innehåller 1",
+        outerHTML: h1s[0],
+        fallbackHTML: "",
+        // elementContent: h1s[0],
+        // tagStart: "<h1>",
+        // tagEnd: "</h1>",
+        text: "Sidan innehåller 1 H1",
         error: !approved ? `Vi hitta ${h1s.length} h1 rubriker på sidan.` : "",
     };
     return object;
@@ -105,9 +109,11 @@ const skippedHeadingLevel = async (page) => {
     const approved = errLength === 0;
     const object = {
         approved,
-        elementContent: "",
-        tagStart: "",
-        tagEnd: "",
+        outerHTML: "",
+        fallbackHTML: "",
+        // elementContent: "",
+        // tagStart: "",
+        // tagEnd: "",
         text: "Sidan använder rätt rubrikstruktur",
         error: !approved ? createError : "",
     };
@@ -144,13 +150,16 @@ const hasAltAttributes = async (page) => {
         error.text = `Sidan saknar alt attribut på ${error.elements.length} element`;
         return error;
     };
+    // || '<meta name="viewport">'
     const approved = altTags.every((tag) => tag.approved);
     const object = {
         approved,
-        elementContent: "",
-        tagStart: '[alt="..."]',
-        tagEnd: "",
-        text: "Sidan saknar inga",
+        outerHTML: '<img alt="...">',
+        fallbackHTML: '[alt=""]',
+        // elementContent: "",
+        // tagStart: '[alt="..."]',
+        // tagEnd: "",
+        text: "Sidan saknar inga alt attribut",
         error: !approved ? await createError() : "",
     };
     return object;
@@ -158,15 +167,17 @@ const hasAltAttributes = async (page) => {
 const hasTitle = async (page) => {
     const title = await page.evaluate(() => {
         const title = document.querySelector("title");
-        return title ? title.innerText : "";
+        return title ? title.outerHTML : "";
     });
     const approved = !!title;
     const object = {
         approved,
-        elementContent: title,
-        tagStart: "<title>",
-        tagEnd: "</title>",
-        text: "Sidan innehåller",
+        outerHTML: title,
+        fallbackHTML: "",
+        // elementContent: title,
+        // tagStart: "<title>",
+        // tagEnd: "</title>",
+        text: "Sidan innehåller en titel",
         error: !approved ? "Sidan saknar en titel." : "",
     };
     return object;
@@ -174,15 +185,17 @@ const hasTitle = async (page) => {
 const hasMetaDescription = async (page) => {
     const description = await page.evaluate(() => {
         const description = document.querySelector("meta[name=description]");
-        return description ? description.content : "";
+        return description ? description.outerHTML : "";
     });
     const approved = !!description;
     const object = {
         approved,
-        elementContent: description,
-        tagStart: '<meta name="$description$" content="',
-        tagEnd: '">',
-        text: "Sidan innehåller",
+        outerHTML: description || '<meta name="description">',
+        fallbackHTML: "",
+        // elementContent: description,
+        // tagStart: '<meta name="$description$" content="',
+        // tagEnd: '">',
+        text: "Sidan innehåller en beskrivning",
         error: !approved ? "Sidan saknar en beskrivning." : "",
     };
     return object;
@@ -190,15 +203,17 @@ const hasMetaDescription = async (page) => {
 const hasMetaViewport = async (page) => {
     const viewport = await page.evaluate(() => {
         const viewport = document.querySelector("meta[name=viewport]");
-        return viewport ? viewport.content : "";
+        return viewport ? viewport.outerHTML : "";
     });
     const approved = !!viewport;
     const object = {
         approved,
-        elementContent: viewport,
-        tagStart: '<meta name="$viewport$" content="',
-        tagEnd: '">',
-        text: "Sidan innehåller",
+        outerHTML: viewport || '<meta name="viewport">',
+        fallbackHTML: "",
+        // elementContent: viewport,
+        // tagStart: '<meta name="$viewport$" content="',
+        // tagEnd: '">',
+        text: "Sidan innehåller en viewport",
         error: !approved ? "Sidan saknar en viewport." : "",
     };
     return object;

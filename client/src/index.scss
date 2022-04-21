@@ -1,4 +1,5 @@
 @import "utilities";
+@import "variables";
 
 * {
   margin: 0;
@@ -13,6 +14,19 @@
   --element-background: #202124;
   --element-color: #5db0d7;
   --error-red: rgb(255, 100, 100);
+  --padding-wrapper: 0 64px;
+}
+
+@media all and (max-width: $TABLET) {
+  :root {
+    --padding-wrapper: 0 32px;
+  }
+}
+
+@media all and (max-width: $MOBILE-PORTRAIT) {
+  :root {
+    --padding-wrapper: 0 16px;
+  }
 }
 
 ul {
@@ -38,12 +52,13 @@ body {
   align-items: center;
   width: 100%;
   height: 100%;
-  padding: 0 64px;
+  padding: var(--padding-wrapper);
   color: var(--primary-color);
   &__wrapper {
     position: relative;
+
     // margin-top: 128px;
-    padding: 32px;
+    // padding: 32px;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -66,14 +81,25 @@ body {
 }
 
 .url {
-  max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  & > * + * {
+    margin-top: 24px;
+  }
+  &:first-child {
+    line-height: 38px;
+  }
   &__inputWrapper {
     position: relative;
     z-index: 1;
     width: 100%;
     height: 45px;
-    margin: 32px 0;
     display: flex;
     &--error {
       input {
@@ -156,6 +182,15 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+    @media all and (max-width: $MOBILE-LANDSCAPE) {
+      grid-template-columns: 1fr;
+    }
+    & > *:last-of-type {
+      grid-column: 1 / 3;
+      @media all and (max-width: $MOBILE-LANDSCAPE) {
+        grid-column: unset;
+      }
+    }
   }
 
   &__list {
@@ -180,12 +215,16 @@ body {
 
   &__typeList {
     display: flex;
+    flex-wrap: wrap;
     li {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 8px;
+      @media all and (max-width: $MOBILE-LANDSCAPE) {
+        padding: 4px;
+      }
     }
   }
   &__bullet {
@@ -290,6 +329,7 @@ body {
       }
       &__imageWrapper {
         min-width: 200px;
+        max-width: 200px;
         height: 100%;
         overflow: hidden;
         display: flex;
@@ -330,14 +370,20 @@ body {
     place-items: center;
   }
   &__main {
+    color: var(--element-color);
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
+    & > * + * {
+      margin-top: 4px;
+    }
   }
   &__text {
     display: flex;
     align-items: center;
     white-space: nowrap;
     margin-right: 8px;
+    color: var(--primary-color);
   }
   &__tag {
     position: relative;

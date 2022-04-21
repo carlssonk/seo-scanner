@@ -36,9 +36,11 @@ const hasHubspotTracking = (scripts) => {
     const approved = scripts.some((script) => script.id.includes(id) && script.src.includes(src));
     const object = {
         approved,
-        elementContent: "",
-        tagStart: "<script>",
-        tagEnd: "",
+        outerHTML: "<script>",
+        fallbackHTML: "",
+        // elementContent: "",
+        // tagStart: "<script>",
+        // tagEnd: "",
         text: "Sidan innehåller HubSpot Tracking",
         error: !approved ? "Vi hitta inget HubSpot Tracking script på sidan." : "",
     };
@@ -54,9 +56,11 @@ const hasGoogleAnalyticsTracking = (scripts) => {
     });
     const object = {
         approved,
-        elementContent: "",
-        tagStart: "<script>",
-        tagEnd: "",
+        outerHTML: "<script>",
+        fallbackHTML: "",
+        // elementContent: "",
+        // tagStart: "<script>",
+        // tagEnd: "",
         text: "Sidan innehåller Google Analytics Tracking",
         error: !approved ? "Vi hitta inget Google Analytics Tracking script på sidan." : "",
     };
@@ -67,9 +71,11 @@ const hasGoogleTagManagerTracking = (scripts) => {
     const approved = scripts.some((script) => script.content.includes(content));
     const object = {
         approved,
-        elementContent: "",
-        tagStart: "<script>",
-        tagEnd: "",
+        outerHTML: "<script>",
+        fallbackHTML: "",
+        // elementContent: "",
+        // tagStart: "<script>",
+        // tagEnd: "",
         text: "Sidan innehåller Google Tag Manager",
         error: !approved ? "Vi hitta inget Google Tag Manager Tracking script på sidan." : "",
     };

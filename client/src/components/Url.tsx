@@ -14,11 +14,12 @@ function Url({
   return (
     <div className="url">
       <h1 className="font-xl">Utför en granskning av din webbsida.</h1>
+      <p className="primary-paragraph margin-0-auto font-m">
+        Se hur din webbplats presterar, ta reda på varför den är långsam och upptäck optimeringsmöjligheter.
+      </p>
       <form
         onSubmit={(e) => handleSubmit(e)}
-        className={`url__inputWrapper ${
-          urlIsValid ? "" : "url__inputWrapper--error"
-        }`}
+        className={`url__inputWrapper ${urlIsValid ? "" : "url__inputWrapper--error"}`}
       >
         <input
           className="url__input"

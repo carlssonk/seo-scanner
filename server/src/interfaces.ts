@@ -2,9 +2,11 @@ export type Error = string | { auditType: string; text: string; helpText: string
 
 export interface Entry {
   approved: boolean;
-  elementContent: string;
-  tagStart: string;
-  tagEnd: string;
+  outerHTML: string;
+  fallbackHTML: string;
+  // elementContent: string;
+  // tagStart: string;
+  // tagEnd: string;
   text: string;
   error: Error;
 }

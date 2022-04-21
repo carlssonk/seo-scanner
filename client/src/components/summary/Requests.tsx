@@ -4,7 +4,7 @@ import { formatTotalSize } from "../../utils";
 
 function Requests({ data, summary, setSummary }: { data: any; summary: any; setSummary: any }) {
   return (
-    <div className="boxStyle" style={{ gridColumn: "1/3" }}>
+    <div className="boxStyle">
       <div>
         <h3>Total Nedladdningsstorlek - {data && formatTotalSize(data.totalPageSize)}</h3>
         <div className="summary">

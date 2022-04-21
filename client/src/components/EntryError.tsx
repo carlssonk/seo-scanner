@@ -70,7 +70,7 @@ function EntryError({ error, isOpen }: { error: ErrorInterface; isOpen: boolean 
                       <div style={{ display: "flex" }}>
                         <div className="element-style entry__textResponsive">
                           {`${outerHTML.split(/ (.*)/s)[0]} `}
-                          <span className="altErrorEntry__alt">alt="..."</span>
+                          <span className="altErrorEntry__alt">alt=""</span>
                           {` ${outerHTML.split(/ (.*)/s)[1]}`}
                         </div>
                       </div>

@@ -1,8 +1,15 @@
 export const pipeEntries = async (funcs) => {
     let data = [];
     for (let i = 0; i < funcs.length; i++) {
-        const { approved, elementContent, tagStart, tagEnd, text, error } = await funcs[i];
-        data.push({ approved, elementContent, tagStart, tagEnd, text, error });
+        const { approved, outerHTML, text, error, fallbackHTML } = await funcs[i];
+        const entry = {
+            approved,
+            outerHTML,
+            fallbackHTML,
+            text,
+            error,
+        };
+        data.push(entry);
     }
     return data;
 };

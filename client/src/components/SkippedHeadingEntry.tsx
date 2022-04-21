@@ -47,17 +47,10 @@ function SkippedHeadingEntry({
     return [...formatStartTagArray, { html: tagContent, type: "content" }, { html: tagEnd, type: "tag" }];
   };
 
-  useEffect(() => {
-    console.log(current);
-  }, []);
-
   const splitTag = (html: string) => {
-    // console.log(html);
     const regex = new RegExp(`(${current.toLowerCase()})`);
     const splitted = html.split(regex);
-    // console.log(splitted);
-    // .map((x, idx, self) => <div className={idx === 0 ? "tag-start-bg" : "tag-end-bg"}>{x}</div>);
-    // console.log(html);
+
     return splitted;
   };
 
@@ -71,7 +64,7 @@ function SkippedHeadingEntry({
     return style;
   };
 
-  const setTagClass = (str, idx) => {
+  const setTagClass = (str: string) => {
     if (str === "<") return "tag-start-bg";
     if (str === ">") return "tag-end-bg";
     return "tag-content-bg";
@@ -79,11 +72,11 @@ function SkippedHeadingEntry({
 
   return (
     <div className="entry__tag my-s">
-      {separateElement(outerHTML).map(({ html, type }, idx) => (
+      {separateElement(outerHTML).map(({ html, type }) => (
         <>
           {type === "tag"
             ? splitTag(html).map((x, idx, self) => (
-                <div className={setTagClass(x, idx)} style={setTagStyle(idx)}>
+                <div className={setTagClass(x)} style={setTagStyle(idx)}>
                   {x}
                 </div>
               ))
