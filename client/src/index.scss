@@ -275,6 +275,7 @@ body {
   border-radius: 10px;
   justify-content: center;
   .entryWrapper {
+    position: relative;
     display: flex;
     padding: 8px;
     cursor: pointer;
@@ -366,14 +367,24 @@ body {
   }
   &__chevron {
     width: 40px;
+    min-width: 40px;
+    height: 100%;
+    margin-left: auto;
     display: grid;
     place-items: center;
+    position: absolute;
+    right: -1px;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border-radius: 10px;
   }
   &__main {
     color: var(--element-color);
     display: flex;
     flex-wrap: wrap;
-    width: 100%;
+    width: calc(100% - 80px);
     & > * + * {
       margin-top: 4px;
     }
@@ -381,7 +392,6 @@ body {
   &__text {
     display: flex;
     align-items: center;
-    white-space: nowrap;
     margin-right: 8px;
     color: var(--primary-color);
   }
@@ -391,6 +401,9 @@ body {
     white-space: nowrap;
     flex-grow: 1;
     color: var(--element-color);
+  }
+  [class^="tag-"] {
+    white-space: nowrap;
   }
   .tag-start-bg {
     padding: 4px 0 4px 4px;

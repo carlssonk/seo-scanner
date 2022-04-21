@@ -102,7 +102,7 @@ function EntryError({ error, isOpen }: { error: ErrorInterface; isOpen: boolean 
             </ul>
           </>
         ) : (
-          <div>{error}</div>
+          <b>{error}</b>
         )}
       </div>
     </div>

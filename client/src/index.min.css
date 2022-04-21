@@ -461,6 +461,7 @@ body {
 }
 
 .entry .entryWrapper {
+  position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -571,9 +572,20 @@ body {
 
 .entry__chevron {
   width: 40px;
+  min-width: 40px;
+  height: 100%;
+  margin-left: auto;
   display: -ms-grid;
   display: grid;
   place-items: center;
+  position: absolute;
+  right: -1px;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  background: white;
+  border-radius: 10px;
 }
 
 .entry__main {
@@ -583,7 +595,7 @@ body {
   display: flex;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
-  width: 100%;
+  width: calc(100% - 80px);
 }
 
 .entry__main > * + * {
@@ -597,7 +609,6 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  white-space: nowrap;
   margin-right: 8px;
   color: var(--primary-color);
 }
@@ -612,6 +623,10 @@ body {
       -ms-flex-positive: 1;
           flex-grow: 1;
   color: var(--element-color);
+}
+
+.entry [class^="tag-"] {
+  white-space: nowrap;
 }
 
 .entry .tag-start-bg {
