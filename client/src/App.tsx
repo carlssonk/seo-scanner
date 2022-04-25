@@ -13,6 +13,8 @@ import Requests from "./components/summary/Requests";
 
 const KONTAKT_URL = "https://www.ngine.com/kontakta-oss";
 
+const ENDPOINT = "https://z2yr3pis2canpjiet6n5wwgt4m0zvoly.lambda-url.eu-north-1.on.aws";
+
 function App() {
   const summaryRef = useRef<HTMLDivElement[]>([]);
   // const [count, setCount] = useState(0)
@@ -54,7 +56,7 @@ function App() {
       }
 
       setFlowState(1);
-      const res = await fetch(`/api/audit?url=${finalUrl}`, {
+      const res = await fetch(`${ENDPOINT}?url=${finalUrl}`, {
         method: "GET",
         headers: {
           Accept: "application/javascript",
