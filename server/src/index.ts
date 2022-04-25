@@ -3,6 +3,14 @@ import { seo } from "./html-crawlers/seo.js";
 import { scripts } from "./html-crawlers/scripts.js";
 import chromium from "chrome-aws-lambda";
 
+const httpHeaders = {
+  Accept: "application/json",
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET",
+};
+
 export const handler = async (event) => {
   // const { url } = req.query;
 
@@ -23,13 +31,7 @@ export const handler = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET",
-      },
+      headers: httpHeaders,
       body: JSON.stringify({ error: "ERROR" }),
     };
   }
@@ -42,10 +44,7 @@ export const handler = async (event) => {
   // property to 'true'.
   let response = {
     statusCode: responseCode,
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
+    headers: httpHeaders,
     body: JSON.stringify({ data }),
   };
   console.log("response: " + JSON.stringify(response));
