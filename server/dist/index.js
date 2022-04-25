@@ -1,33 +1,64 @@
-import puppeteer from "puppeteer";
 import { requestHandler } from "./requests.js";
-import express from "express";
 import { seo } from "./html-crawlers/seo.js";
 import { scripts } from "./html-crawlers/scripts.js";
-// import { getSelector } from "./utils/utils.js";
-const app = express();
-const PORT = 8080;
-// app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.get("/api/audit", async (req, res) => {
-    const { url } = req.query;
+import chromium from "chrome-aws-lambda";
+export const handler = async (event) => {
+    // const { url } = req.query;
+    // console.log(data);
+    // res.json({ data });
+    let url = "https://google.com";
+    let responseCode = 200;
+    // console.log("request: " + JSON.stringify(event));
+    if (event.queryStringParameters && event.queryStringParameters.url) {
+        url = event.queryStringParameters.url;
+    }
     let data;
     try {
         data = await init(url);
     }
     catch (error) {
-        return res.json({ data: { error: "ERROR" } });
+        return {
+            statusCode: 500,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ error, url }),
+        };
     }
-    console.log(data);
-    res.json({ data });
-});
-// type scriptsInterface = scriptObjectInterface[];
-let URL = "";
-let browser = null;
+    let responseBody = {
+        message: data,
+        input: event,
+        url,
+    };
+    // The output from a Lambda proxy integration must be
+    // in the following JSON object. The 'headers' property
+    // is for custom response headers in addition to standard
+    // ones. The 'body' property  must be a JSON string. For
+    // base64-encoded payload, you must also set the 'isBase64Encoded'
+    // property to 'true'.
+    let response = {
+        statusCode: responseCode,
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(responseBody),
+    };
+    console.log("response: " + JSON.stringify(response));
+    return response;
+};
 const init = async (url) => {
-    URL = url;
+    let URL = url;
+    let browser = null;
     // Create browser, open page and go to url
-    browser = await puppeteer.launch();
+    browser = await chromium.puppeteer.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath,
+        headless: chromium.headless,
+        ignoreHTTPSErrors: true,
+    });
     const page = await browser.newPage();
     // await page.goto(URL);
     let result = [];
@@ -48,7 +79,7 @@ const init = async (url) => {
     const tic = Date.now();
     let number = 0;
     // const interval = setInterval(() => number++, 100);
-    await page.goto(URL, { waitUntil: "networkidle2" });
+    await page.goto(URL, { waitUntil: "networkidle2", timeout: 0 });
     const pageFullyLoaded = Date.now() - tic;
     // clearInterval(interval);
     // console.log(number);
@@ -99,4 +130,4 @@ const init = async (url) => {
 //   var end = process.hrtime(start);
 //   return Math.round(end[0] * 1000 + end[1] / 1000000);
 // }
-app.listen(PORT, () => console.log(`${PORT} LISTENING...`));
+// app.listen(PORT, () => console.log(`${PORT} LISTENING...`));

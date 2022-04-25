@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import { Entry, scriptsInterface } from "../interfaces.js";
 import { pipeEntries } from "../utils/utils.js";
 

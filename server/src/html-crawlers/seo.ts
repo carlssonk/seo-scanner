@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import { Entry, Error } from "../interfaces.js";
 import { pipeEntries } from "../utils/utils.js";
 
@@ -66,7 +66,7 @@ const hasOneH1 = async (page: puppeteer.Page): Promise<Entry> => {
 
       return JSON.stringify(
         h1s.map((x) => {
-          return x.outerHTML;
+          return x.innerText;
         })
       );
     })
@@ -75,7 +75,7 @@ const hasOneH1 = async (page: puppeteer.Page): Promise<Entry> => {
   const approved = h1s.length === 1;
   const object: Entry = {
     approved,
-    outerHTML: h1s[0],
+    outerHTML: `<h1>${h1s[0] ?? ""}</h1>`,
     fallbackHTML: "",
     // elementContent: h1s[0],
     // tagStart: "<h1>",
@@ -88,10 +88,28 @@ const hasOneH1 = async (page: puppeteer.Page): Promise<Entry> => {
 
 const skippedHeadingLevel = async (page: puppeteer.Page): Promise<Entry> => {
   // "Import" getSelector function
-  await page.addScriptTag({ path: "dist/utils/getSelector.js" });
+  // await page.addScriptTag({ path: "dist/utils/getSelector.js" });
 
   const headings = JSON.parse(
     await page.evaluate(async (): Promise<string> => {
+      function getSelector(elm: any) {
+        if (elm.tagName === "BODY") return "BODY";
+        const names = [];
+        while (elm.parentElement && elm.tagName !== "BODY") {
+          if (elm.id) {
+            names.unshift("#" + elm.getAttribute("id")); // getAttribute, because `elm.id` could also return a child element with name "id"
+            break; // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
+          } else {
+            let c = 1,
+              e = elm;
+            for (; e.previousElementSibling; e = e.previousElementSibling, c++);
+            names.unshift(elm.tagName + ":nth-child(" + c + ")");
+          }
+          elm = elm.parentElement;
+        }
+
+        return names.join(">");
+      }
       const headings = [...document.querySelectorAll("h1, h2, h3, h4, h5, h6")];
       const promises = headings.map(async (heading) => {
         return {
@@ -117,7 +135,7 @@ const skippedHeadingLevel = async (page: puppeteer.Page): Promise<Entry> => {
   for (let i = 1; i < headings.length; i++) {
     if (headings[i].level > headings[i - 1].level + 1) {
       const elementHandler = await page.$(headings[i].selector);
-      let screenshot: string | Buffer = "";
+      let screenshot: string | void | Buffer = "";
 
       try {
         screenshot = await elementHandler.screenshot({ encoding: "base64" });
@@ -152,10 +170,28 @@ const skippedHeadingLevel = async (page: puppeteer.Page): Promise<Entry> => {
 
 const hasAltAttributes = async (page: puppeteer.Page): Promise<Entry> => {
   // "Import" getSelector function
-  await page.addScriptTag({ path: "dist/utils/getSelector.js" });
+  // await page.addScriptTag({ path: "dist/utils/getSelector.js" });
 
   const altTags = JSON.parse(
     await page.evaluate((): string => {
+      function getSelector(elm: any) {
+        if (elm.tagName === "BODY") return "BODY";
+        const names = [];
+        while (elm.parentElement && elm.tagName !== "BODY") {
+          if (elm.id) {
+            names.unshift("#" + elm.getAttribute("id")); // getAttribute, because `elm.id` could also return a child element with name "id"
+            break; // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
+          } else {
+            let c = 1,
+              e = elm;
+            for (; e.previousElementSibling; e = e.previousElementSibling, c++);
+            names.unshift(elm.tagName + ":nth-child(" + c + ")");
+          }
+          elm = elm.parentElement;
+        }
+
+        return names.join(">");
+      }
       const images = document.querySelectorAll("img");
       const areas = document.querySelectorAll("area");
       const inputs = document.querySelectorAll("input[type=image]");
@@ -178,7 +214,7 @@ const hasAltAttributes = async (page: puppeteer.Page): Promise<Entry> => {
     for (let i = 0; i < altTags.length; i++) {
       if (altTags[i].approved) continue;
       const elementHandler = await page.$(altTags[i].selector);
-      let screenshot: string | Buffer = "";
+      let screenshot: string | void | Buffer = "";
       try {
         screenshot = await elementHandler.screenshot({ encoding: "base64" });
       } catch {}
@@ -208,12 +244,12 @@ const hasTitle = async (page: puppeteer.Page): Promise<Entry> => {
   const title = await page.evaluate((): string => {
     const title = document.querySelector("title");
 
-    return title ? title.outerHTML : "";
+    return title ? title.innerText : "";
   });
   const approved = !!title;
   const object: Entry = {
     approved,
-    outerHTML: title,
+    outerHTML: `<title>${title}</title>`,
     fallbackHTML: "",
     // elementContent: title,
     // tagStart: "<title>",
@@ -252,7 +288,7 @@ const hasMetaViewport = async (page: puppeteer.Page): Promise<Entry> => {
   const approved = !!viewport;
   const object: Entry = {
     approved,
-    outerHTML: viewport || '<meta name="viewport">',
+    outerHTML: '<meta name="viewport">',
     fallbackHTML: "",
     // elementContent: viewport,
     // tagStart: '<meta name="$viewport$" content="',

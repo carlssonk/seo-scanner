@@ -46,16 +46,17 @@ const avoidLargeFileSize = async (page, requestDetails) => {
     return object;
 };
 const hasOneH1 = async (page) => {
+    var _a;
     const h1s = JSON.parse(await page.evaluate(() => {
         const h1s = [...document.querySelectorAll("h1")];
         return JSON.stringify(h1s.map((x) => {
-            return x.outerHTML;
+            return x.innerText;
         }));
     }));
     const approved = h1s.length === 1;
     const object = {
         approved,
-        outerHTML: h1s[0],
+        outerHTML: `<h1>${(_a = h1s[0]) !== null && _a !== void 0 ? _a : ""}</h1>`,
         fallbackHTML: "",
         // elementContent: h1s[0],
         // tagStart: "<h1>",
@@ -67,8 +68,27 @@ const hasOneH1 = async (page) => {
 };
 const skippedHeadingLevel = async (page) => {
     // "Import" getSelector function
-    await page.addScriptTag({ path: "dist/utils/getSelector.js" });
+    // await page.addScriptTag({ path: "dist/utils/getSelector.js" });
     const headings = JSON.parse(await page.evaluate(async () => {
+        function getSelector(elm) {
+            if (elm.tagName === "BODY")
+                return "BODY";
+            const names = [];
+            while (elm.parentElement && elm.tagName !== "BODY") {
+                if (elm.id) {
+                    names.unshift("#" + elm.getAttribute("id")); // getAttribute, because `elm.id` could also return a child element with name "id"
+                    break; // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
+                }
+                else {
+                    let c = 1, e = elm;
+                    for (; e.previousElementSibling; e = e.previousElementSibling, c++)
+                        ;
+                    names.unshift(elm.tagName + ":nth-child(" + c + ")");
+                }
+                elm = elm.parentElement;
+            }
+            return names.join(">");
+        }
         const headings = [...document.querySelectorAll("h1, h2, h3, h4, h5, h6")];
         const promises = headings.map(async (heading) => {
             return {
@@ -121,8 +141,27 @@ const skippedHeadingLevel = async (page) => {
 };
 const hasAltAttributes = async (page) => {
     // "Import" getSelector function
-    await page.addScriptTag({ path: "dist/utils/getSelector.js" });
+    // await page.addScriptTag({ path: "dist/utils/getSelector.js" });
     const altTags = JSON.parse(await page.evaluate(() => {
+        function getSelector(elm) {
+            if (elm.tagName === "BODY")
+                return "BODY";
+            const names = [];
+            while (elm.parentElement && elm.tagName !== "BODY") {
+                if (elm.id) {
+                    names.unshift("#" + elm.getAttribute("id")); // getAttribute, because `elm.id` could also return a child element with name "id"
+                    break; // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
+                }
+                else {
+                    let c = 1, e = elm;
+                    for (; e.previousElementSibling; e = e.previousElementSibling, c++)
+                        ;
+                    names.unshift(elm.tagName + ":nth-child(" + c + ")");
+                }
+                elm = elm.parentElement;
+            }
+            return names.join(">");
+        }
         const images = document.querySelectorAll("img");
         const areas = document.querySelectorAll("area");
         const inputs = document.querySelectorAll("input[type=image]");
@@ -167,12 +206,12 @@ const hasAltAttributes = async (page) => {
 const hasTitle = async (page) => {
     const title = await page.evaluate(() => {
         const title = document.querySelector("title");
-        return title ? title.outerHTML : "";
+        return title ? title.innerText : "";
     });
     const approved = !!title;
     const object = {
         approved,
-        outerHTML: title,
+        outerHTML: `<title>${title}</title>`,
         fallbackHTML: "",
         // elementContent: title,
         // tagStart: "<title>",
@@ -208,7 +247,7 @@ const hasMetaViewport = async (page) => {
     const approved = !!viewport;
     const object = {
         approved,
-        outerHTML: viewport || '<meta name="viewport">',
+        outerHTML: '<meta name="viewport">',
         fallbackHTML: "",
         // elementContent: viewport,
         // tagStart: '<meta name="$viewport$" content="',
