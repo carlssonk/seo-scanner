@@ -6,7 +6,7 @@ export const handler = async (event) => {
     // const { url } = req.query;
     // console.log(data);
     // res.json({ data });
-    let url = "https://google.com";
+    let url = "";
     let responseCode = 200;
     // console.log("request: " + JSON.stringify(event));
     if (event.queryStringParameters && event.queryStringParameters.url) {
@@ -22,15 +22,13 @@ export const handler = async (event) => {
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET",
             },
-            body: JSON.stringify({ error, url }),
+            body: JSON.stringify({ error: "ERROR" }),
         };
     }
-    let responseBody = {
-        message: data,
-        input: event,
-        url,
-    };
     // The output from a Lambda proxy integration must be
     // in the following JSON object. The 'headers' property
     // is for custom response headers in addition to standard
@@ -43,7 +41,7 @@ export const handler = async (event) => {
             Accept: "application/json",
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(responseBody),
+        body: JSON.stringify({ data }),
     };
     console.log("response: " + JSON.stringify(response));
     return response;

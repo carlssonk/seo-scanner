@@ -26,6 +26,9 @@ export const handler = async (event) => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET",
       },
       body: JSON.stringify({ error: "ERROR" }),
     };
