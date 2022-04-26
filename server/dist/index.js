@@ -13,7 +13,7 @@ export const handler = async (event) => {
     // const { url } = req.query;
     // console.log(data);
     // res.json({ data });
-    let url = "";
+    let url = "https://ngine.com";
     let responseCode = 200;
     // console.log("request: " + JSON.stringify(event));
     if (event.queryStringParameters && event.queryStringParameters.url) {

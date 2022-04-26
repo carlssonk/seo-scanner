@@ -2,7 +2,7 @@ import { useState, useRef, createRef, useEffect } from "react";
 import { Entry as EntryInterface } from "../../server/src/interfaces";
 import { nanoid } from "nanoid";
 // import logo from './logo.svg'
-import { formatTotalSize, ENDPOINT_URL } from "./utils";
+import { formatTotalSize } from "./utils";
 // import './App.css'
 
 import { FormEvent } from "react";
@@ -12,6 +12,7 @@ import SummaryEntry from "./components/SummaryEntry";
 import Requests from "./components/summary/Requests";
 
 const KONTAKT_URL = "https://www.ngine.com/kontakta-oss";
+const ENDPOINT_URL = "https://z2yr3pis2canpjiet6n5wwgt4m0zvoly.lambda-url.eu-north-1.on.aws";
 
 function App() {
   const summaryRef = useRef<HTMLDivElement[]>([]);
@@ -54,12 +55,12 @@ function App() {
       }
 
       setFlowState(1);
-      const res = await fetch(`${ENDPOINT_URL()}?url=${finalUrl}`, {
+      const res = await fetch(`${ENDPOINT_URL}?url=${finalUrl}`, {
         method: "GET",
-        headers: {
-          Accept: "application/javascript",
-          "Content-Type": "application/javascript",
-        },
+        // headers: {
+        // Accept: "application/javascript",
+        // "Content-Type": "application/javascript",
+        // },
       });
 
       const { data } = await res.json();

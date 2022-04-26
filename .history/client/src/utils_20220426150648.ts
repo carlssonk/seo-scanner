@@ -9,10 +9,10 @@ export const formatTotalSize = (number: number) => {
   return kb < 1000 ? `${Math.round(kb)}KB` : `${mb.toFixed(2)}MB`;
 };
 
-export const ENDPOINT_URL = () => {
-  return window.location.hostname === "localhost" ||
+export const isDevelopment = () => {
+  return (
+    window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1" ||
     window.location.hostname === ""
-    ? ""
-    : "https://z2yr3pis2canpjiet6n5wwgt4m0zvoly.lambda-url.eu-north-1.on.aws";
+  );
 };

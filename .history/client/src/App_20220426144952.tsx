@@ -2,7 +2,7 @@ import { useState, useRef, createRef, useEffect } from "react";
 import { Entry as EntryInterface } from "../../server/src/interfaces";
 import { nanoid } from "nanoid";
 // import logo from './logo.svg'
-import { formatTotalSize, ENDPOINT_URL } from "./utils";
+import { formatTotalSize } from "./utils";
 // import './App.css'
 
 import { FormEvent } from "react";
@@ -54,7 +54,7 @@ function App() {
       }
 
       setFlowState(1);
-      const res = await fetch(`${ENDPOINT_URL()}?url=${finalUrl}`, {
+      const res = await fetch(`/api/audit?url=${finalUrl}`, {
         method: "GET",
         headers: {
           Accept: "application/javascript",
@@ -146,9 +146,9 @@ function App() {
               </a>
             </div>
 
-            <div className="loaderContainer">
-              <div className="loader"></div>
-              <div>
+            <div>
+              <div className="loaderContainer">
+                <div className="loader"></div>
                 <h2>Var vänlig vänta</h2>
                 <h3>Detta kan ta upp till flera minuter...</h3>
               </div>

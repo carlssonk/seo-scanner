@@ -56,10 +56,10 @@ function App() {
       setFlowState(1);
       const res = await fetch(`${ENDPOINT_URL()}?url=${finalUrl}`, {
         method: "GET",
-        headers: {
-          Accept: "application/javascript",
-          "Content-Type": "application/javascript",
-        },
+        // headers: {
+        // Accept: "application/javascript",
+        // "Content-Type": "application/javascript",
+        // },
       });
 
       const { data } = await res.json();
