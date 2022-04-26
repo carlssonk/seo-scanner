@@ -204,7 +204,9 @@ function App() {
                   <li className="summary__listItem summary__listItem">
                     <div className="summary__listValue summary__listValue">
                       <div>
-                        Det finns optimeringsmöjligheter på sidan. Kontakta oss så hjälper vi dig att ta nästa steg!
+                        {score === 100
+                          ? "Sidan ser prima ut! Men det finns garanterat mer optimeringsmöjligheter som vi kan identifiera. Kontakta oss så hjälper vi dig att ta nästa steg!"
+                          : "Det finns optimeringsmöjligheter på sidan. Kontakta oss så hjälper vi dig att ta nästa steg!"}
                       </div>
 
                       <button
