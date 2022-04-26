@@ -261,6 +261,7 @@ body {
 }
 
 .url__inputWrapper--error:after {
+  line-height: normal;
   -webkit-transition: 200ms;
   transition: 200ms;
   position: absolute;
