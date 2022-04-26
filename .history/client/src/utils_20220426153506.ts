@@ -13,6 +13,6 @@ export const ENDPOINT_URL = () => {
   return window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1" ||
     window.location.hostname === ""
-    ? "/api/audit"
+    ? "/api/"
     : "production_url_here";
 };

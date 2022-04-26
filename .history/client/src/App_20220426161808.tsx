@@ -125,16 +125,8 @@ function App() {
     const passed = data.seoDetails.filter((x: any) => x.approved).length;
     const total = data.seoDetails.length;
 
-    score = (passed / total) * 100;
-
-    // Add to score OR remove depending on the loadingtime
-    const pageFullyLoadedS = data.pageFullyLoaded / 1000;
-    let addRemoveScore = pageFullyLoadedS > 15 ? -(pageFullyLoadedS - 15) : 15 - pageFullyLoadedS;
-
-    score = Math.round(score + addRemoveScore);
-
-    score = Math.max(0, score);
-    score = Math.min(100, score);
+    score = Math.roynd((passed / total) * 100);
+    console.log(score);
 
     return score;
   };

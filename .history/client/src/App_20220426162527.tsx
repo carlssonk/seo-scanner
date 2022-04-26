@@ -131,12 +131,7 @@ function App() {
     const pageFullyLoadedS = data.pageFullyLoaded / 1000;
     let addRemoveScore = pageFullyLoadedS > 15 ? -(pageFullyLoadedS - 15) : 15 - pageFullyLoadedS;
 
-    score = Math.round(score + addRemoveScore);
-
-    score = Math.max(0, score);
-    score = Math.min(100, score);
-
-    return score;
+    return Math.round(score + addRemoveScore);
   };
 
   return (

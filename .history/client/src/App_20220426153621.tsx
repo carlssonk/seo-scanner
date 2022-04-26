@@ -19,7 +19,6 @@ function App() {
   const [url, setUrl] = useState("");
   const [urlIsValid, setUrlIsValid] = useState(true);
   const [flowState, setFlowState] = useState(0);
-  const [score, setScore] = useState(0);
 
   // All data
   const [data, setData] = useState<any>(null);
@@ -55,7 +54,7 @@ function App() {
       }
       // ${ENDPOINT_URL()}
       setFlowState(1);
-      const res = await fetch(`${ENDPOINT_URL()}?url=${finalUrl}`, {
+      const res = await fetch(`/api/?url=${finalUrl}`, {
         method: "GET",
         headers: {
           Accept: "application/javascript",
@@ -64,6 +63,7 @@ function App() {
       });
 
       const { data } = await res.json();
+      console.log(data);
 
       if (data.error) {
         return setFlowState(0);
@@ -90,9 +90,11 @@ function App() {
         { name: "SCRIPT", data: data.scriptDetails.sort((a: any, b: any) => a.approved - b.approved) },
       ];
 
+      console.log(reqDetailsSize);
+      console.log(reqDetailsRequests);
+
       setDetails(pageDetails);
       setSummary(formattedRequests);
-      setScore(calculateScore(data));
     }
   };
 
@@ -119,24 +121,8 @@ function App() {
     return !!pattern.test(str);
   };
 
-  const calculateScore = (data: any) => {
-    let score = 0;
-    // Calculate score based on SEO
-    const passed = data.seoDetails.filter((x: any) => x.approved).length;
-    const total = data.seoDetails.length;
-
-    score = (passed / total) * 100;
-
-    // Add to score OR remove depending on the loadingtime
-    const pageFullyLoadedS = data.pageFullyLoaded / 1000;
-    let addRemoveScore = pageFullyLoadedS > 15 ? -(pageFullyLoadedS - 15) : 15 - pageFullyLoadedS;
-
-    score = Math.round(score + addRemoveScore);
-
-    score = Math.max(0, score);
-    score = Math.min(100, score);
-
-    return score;
+  const objIsEmpty = (obj: object) => {
+    return Object.keys(obj).length === 0;
   };
 
   return (
@@ -177,30 +163,17 @@ function App() {
               <div className="boxStyle">
                 <ul className="summary__list">
                   <li className="summary__listItem">
-                    <div className="category-score" data-js="category-score" data-name="seo">
-                      <div className="circle">
-                        <svg id="svg" width="70" height="70" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                          <circle
-                            className="circle-stroke"
-                            r="33.333"
-                            cx="35"
-                            cy="35"
-                            fill="transparent"
-                            stroke-dasharray={209 + (score / 100) * 209}
-                            stroke-dashoffset="0"
-                          ></circle>
-                        </svg>
-                        <b className="circle-value" data-js="category-value">
-                          {score}
-                        </b>
-                      </div>
-                      <b>SEO Betyg</b>
-                    </div>
+                    <div className="summary__listKey">Ngine Score</div>
+                    <div className="summary__listValue">100 / 100</div>
                   </li>
-                  <li className="summary__listItem summary__listItem">
-                    <div className="summary__listValue summary__listValue">
+                  <li className="summary__listItem summary__listItem--column">
+                    <div className="summary__listKey">Sammanfattning</div>
+                    <div className="summary__listValue summary__listValue--bottom">
                       <div>
-                        Det finns optimeringsmöjligheter på sidan. Kontakta oss så hjälper vi dig att ta nästa steg!
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum vitae nulla enim ducimus minima
+                        quod asperiores, vel dolor porro libero non quis fugiat? Nostrum similique ullam quae esse
+                        perferendis nesciunt magnam deserunt natus tenetur pariatur, in omnis? Magnam saepe quos
+                        laudantium, exercitationem nisi reiciendis corporis a excepturi, quo vitae autem?
                       </div>
 
                       <button
@@ -215,10 +188,6 @@ function App() {
               </div>
               <div className="boxStyle">
                 <ul className="summary__list">
-                  <li className="summary__listItem">
-                    <div className="summary__listKey">Skanning utfördes</div>
-                    <div className="summary__listValue">{new Date().toLocaleString()}</div>
-                  </li>
                   <li className="summary__listItem">
                     <div className="summary__listKey">URL</div>
                     <a href={url} target="_blank" className="summary__listValue">
@@ -236,7 +205,10 @@ function App() {
                   <li className="summary__listItem">
                     <div className="summary__listKey">Godkända Granskningar</div>
                     <div className="summary__listValue">
-                      {data && data.seoDetails.filter((x: any) => x.approved).length} / {data && data.seoDetails.length}
+                      {data &&
+                        data.scriptDetails.filter((x: any) => x.approved).length +
+                          data.seoDetails.filter((x: any) => x.approved).length}{" "}
+                      / {data && data.scriptDetails.length + data.seoDetails.length}
                     </div>
                   </li>
                 </ul>
@@ -244,7 +216,7 @@ function App() {
               <Requests data={data} summary={summary} setSummary={setSummary} />
             </div>
             <h2 className="primary-h2">Detaljer</h2>
-            <ul style={{ width: "100%", paddingBottom: "32px" }}>
+            <ul>
               {details &&
                 details.map((category: any) => (
                   <li key={nanoid()} className="boxStyle details__listItem">
@@ -255,6 +227,14 @@ function App() {
                   </li>
                 ))}
             </ul>
+            <h2 className="primary-h2">
+              <span>Kontakta oss</span>
+            </h2>
+            <div className="boxStyle">
+              <button className="btn-primary" onClick={() => (window.location.href = KONTAKT_URL)}>
+                Kontakta oss
+              </button>
+            </div>
           </div>
         )}
       </div>

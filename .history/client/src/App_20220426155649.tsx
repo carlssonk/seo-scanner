@@ -19,7 +19,6 @@ function App() {
   const [url, setUrl] = useState("");
   const [urlIsValid, setUrlIsValid] = useState(true);
   const [flowState, setFlowState] = useState(0);
-  const [score, setScore] = useState(0);
 
   // All data
   const [data, setData] = useState<any>(null);
@@ -64,6 +63,7 @@ function App() {
       });
 
       const { data } = await res.json();
+      console.log(data);
 
       if (data.error) {
         return setFlowState(0);
@@ -90,9 +90,11 @@ function App() {
         { name: "SCRIPT", data: data.scriptDetails.sort((a: any, b: any) => a.approved - b.approved) },
       ];
 
+      console.log(reqDetailsSize);
+      console.log(reqDetailsRequests);
+
       setDetails(pageDetails);
       setSummary(formattedRequests);
-      setScore(calculateScore(data));
     }
   };
 
@@ -119,24 +121,8 @@ function App() {
     return !!pattern.test(str);
   };
 
-  const calculateScore = (data: any) => {
-    let score = 0;
-    // Calculate score based on SEO
-    const passed = data.seoDetails.filter((x: any) => x.approved).length;
-    const total = data.seoDetails.length;
-
-    score = (passed / total) * 100;
-
-    // Add to score OR remove depending on the loadingtime
-    const pageFullyLoadedS = data.pageFullyLoaded / 1000;
-    let addRemoveScore = pageFullyLoadedS > 15 ? -(pageFullyLoadedS - 15) : 15 - pageFullyLoadedS;
-
-    score = Math.round(score + addRemoveScore);
-
-    score = Math.max(0, score);
-    score = Math.min(100, score);
-
-    return score;
+  const objIsEmpty = (obj: object) => {
+    return Object.keys(obj).length === 0;
   };
 
   return (
@@ -186,22 +172,20 @@ function App() {
                             cx="35"
                             cy="35"
                             fill="transparent"
-                            stroke-dasharray={209 + (score / 100) * 209}
-                            stroke-dashoffset="0"
+                            stroke-dasharray={209}
+                            stroke-dashoffset="20"
                           ></circle>
                         </svg>
-                        <b className="circle-value" data-js="category-value">
-                          {score}
-                        </b>
+                        <div className="circle-value" data-js="category-value">
+                          90
+                        </div>
                       </div>
-                      <b>SEO Betyg</b>
+                      <b>Betyg</b>
                     </div>
                   </li>
                   <li className="summary__listItem summary__listItem">
                     <div className="summary__listValue summary__listValue">
-                      <div>
-                        Det finns optimeringsmöjligheter på sidan. Kontakta oss så hjälper vi dig att ta nästa steg!
-                      </div>
+                      <div>Det finns optimeringsmöjligheter på sidan. Kontakta oss för att ta nästa steg!</div>
 
                       <button
                         className="summary__button btn-primary"
@@ -215,10 +199,6 @@ function App() {
               </div>
               <div className="boxStyle">
                 <ul className="summary__list">
-                  <li className="summary__listItem">
-                    <div className="summary__listKey">Skanning utfördes</div>
-                    <div className="summary__listValue">{new Date().toLocaleString()}</div>
-                  </li>
                   <li className="summary__listItem">
                     <div className="summary__listKey">URL</div>
                     <a href={url} target="_blank" className="summary__listValue">

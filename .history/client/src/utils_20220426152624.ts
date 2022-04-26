@@ -8,11 +8,3 @@ export const formatTotalSize = (number: number) => {
 
   return kb < 1000 ? `${Math.round(kb)}KB` : `${mb.toFixed(2)}MB`;
 };
-
-export const ENDPOINT_URL = () => {
-  return window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1" ||
-    window.location.hostname === ""
-    ? "/api/audit"
-    : "production_url_here";
-};
