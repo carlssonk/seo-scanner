@@ -1,5 +1,4 @@
 import { pipeEntries } from "../utils/utils.js";
-const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 export const seo = async (page, requestDetails) => {
     // Scan for HTML TAGS
     // const funcs = [await hasOneH1(page),]
@@ -49,13 +48,13 @@ const hasOneH1 = async (page) => {
     const h1s = JSON.parse(await page.evaluate(() => {
         const h1s = [...document.querySelectorAll("h1")];
         return JSON.stringify(h1s.map((x) => {
-            return x.outerHTML;
+            return x.innerHTML;
         }));
     }));
     const approved = h1s.length === 1;
     const object = {
         approved,
-        outerHTML: h1s[0],
+        outerHTML: `<h1>${h1s[0]}</h1>`,
         fallbackHTML: "",
         // elementContent: h1s[0],
         // tagStart: "<h1>",
@@ -167,12 +166,12 @@ const hasAltAttributes = async (page) => {
 const hasTitle = async (page) => {
     const title = await page.evaluate(() => {
         const title = document.querySelector("title");
-        return title ? title.outerHTML : "";
+        return title ? title.innerHTML : "";
     });
     const approved = !!title;
     const object = {
         approved,
-        outerHTML: title,
+        outerHTML: `<title>${title}</title>`,
         fallbackHTML: "",
         // elementContent: title,
         // tagStart: "<title>",
@@ -190,7 +189,7 @@ const hasMetaDescription = async (page) => {
     const approved = !!description;
     const object = {
         approved,
-        outerHTML: description || '<meta name="description">',
+        outerHTML: '<meta name="description">',
         fallbackHTML: "",
         // elementContent: description,
         // tagStart: '<meta name="$description$" content="',

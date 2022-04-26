@@ -162,6 +162,10 @@ function App() {
 
             <div className="loaderContainer">
               <div className="loader"></div>
+              <div>
+                <h2>Var vänlig vänta</h2>
+                <h3>Detta kan ta upp till flera minuter...</h3>
+              </div>
             </div>
           </div>
         )}

@@ -230,7 +230,7 @@ const hasMetaDescription = async (page: puppeteer.Page): Promise<Entry> => {
   const approved = !!description;
   const object: Entry = {
     approved,
-    outerHTML: '<meta name="description">',
+    outerHTML: description || '<meta name="description">',
     fallbackHTML: "",
     // elementContent: description,
     // tagStart: '<meta name="$description$" content="',
@@ -250,7 +250,7 @@ const hasMetaViewport = async (page: puppeteer.Page): Promise<Entry> => {
   const approved = !!viewport;
   const object: Entry = {
     approved,
-    outerHTML: viewport || '<meta name="viewport">',
+    outerHTML: '<meta name="viewport">',
     fallbackHTML: "",
     // elementContent: viewport,
     // tagStart: '<meta name="$viewport$" content="',
