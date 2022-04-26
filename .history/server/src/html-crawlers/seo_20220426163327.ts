@@ -208,12 +208,12 @@ const hasTitle = async (page: puppeteer.Page): Promise<Entry> => {
   const title = await page.evaluate((): string => {
     const title = document.querySelector("title");
 
-    return title ? title.innerHTML : "";
+    return title ? title.outerHTML : "";
   });
   const approved = !!title;
   const object: Entry = {
     approved,
-    outerHTML: `<title>${title}</title>`,
+    outerHTML: title,
     fallbackHTML: "",
     // elementContent: title,
     // tagStart: "<title>",
@@ -232,7 +232,7 @@ const hasMetaDescription = async (page: puppeteer.Page): Promise<Entry> => {
   const approved = !!description;
   const object: Entry = {
     approved,
-    outerHTML: '<meta name="description">',
+    outerHTML: description || '<meta name="description">',
     fallbackHTML: "",
     // elementContent: description,
     // tagStart: '<meta name="$description$" content="',

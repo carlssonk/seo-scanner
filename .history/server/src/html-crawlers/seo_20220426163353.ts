@@ -232,7 +232,7 @@ const hasMetaDescription = async (page: puppeteer.Page): Promise<Entry> => {
   const approved = !!description;
   const object: Entry = {
     approved,
-    outerHTML: '<meta name="description">',
+    outerHTML: description || '<meta name="description">',
     fallbackHTML: "",
     // elementContent: description,
     // tagStart: '<meta name="$description$" content="',
