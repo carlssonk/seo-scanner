@@ -189,7 +189,7 @@ const hasMetaDescription = async (page) => {
     const approved = !!description;
     const object = {
         approved,
-        outerHTML: '<meta name="description">',
+        outerHTML: description || '<meta name="description">',
         fallbackHTML: "",
         // elementContent: description,
         // tagStart: '<meta name="$description$" content="',
@@ -207,7 +207,7 @@ const hasMetaViewport = async (page) => {
     const approved = !!viewport;
     const object = {
         approved,
-        outerHTML: viewport || '<meta name="viewport">',
+        outerHTML: '<meta name="viewport">',
         fallbackHTML: "",
         // elementContent: viewport,
         // tagStart: '<meta name="$viewport$" content="',

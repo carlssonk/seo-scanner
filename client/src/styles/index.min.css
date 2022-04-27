@@ -221,7 +221,7 @@ body {
 .url {
   margin: 0 auto;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   height: 60vh;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -250,6 +250,7 @@ body {
   position: relative;
   z-index: 1;
   width: 100%;
+  max-width: 800px;
   height: 45px;
   display: -webkit-box;
   display: -ms-flexbox;
