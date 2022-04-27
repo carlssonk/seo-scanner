@@ -2,8 +2,6 @@ import puppeteer from "puppeteer-core";
 import { Entry, Error } from "../interfaces.js";
 import { pipeEntries } from "../utils/utils.js";
 
-const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
-
 export const seo = async (page, requestDetails) => {
   // Scan for HTML TAGS
 

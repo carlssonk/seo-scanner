@@ -52,10 +52,6 @@ function Entry({ entry }: { entry: EntryInterface }) {
   //   return style;
   // };
 
-  useEffect(() => {
-    console.log(entry);
-  }, []);
-
   return (
     <li key={nanoid()} className="entry">
       <div

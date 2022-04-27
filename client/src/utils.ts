@@ -13,6 +13,6 @@ export const ENDPOINT_URL = () => {
   return window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1" ||
     window.location.hostname === ""
-    ? ""
-    : "https://z2yr3pis2canpjiet6n5wwgt4m0zvoly.lambda-url.eu-north-1.on.aws";
+    ? "/api/audit"
+    : "https://rpu4fu7cwxddtwd2y63vcxumrm0rbwcn.lambda-url.eu-north-1.on.aws";
 };
