@@ -14,5 +14,5 @@ export const ENDPOINT_URL = () => {
     window.location.hostname === "127.0.0.1" ||
     window.location.hostname === ""
     ? "/api/audit"
-    : "https://dqgguifne9.execute-api.eu-north-1.amazonaws.com/default/webScanner";
+    : "https://c8osaob8p9.execute-api.eu-north-1.amazonaws.com/default/webScanner";
 };

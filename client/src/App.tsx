@@ -69,6 +69,7 @@ function App() {
         return setFlowState(0);
       }
 
+      document.body.style.backgroundColor = "#f6f7f7";
       setFlowState(2);
       setData(data);
 
