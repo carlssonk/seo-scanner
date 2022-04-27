@@ -15,7 +15,7 @@
   "dependencies": {
     "chrome-aws-lambda": "^10.1.0",
     "gzip-size": "^7.0.0",
-    "puppeteer-core": "^10.4.0",
+    "puppeteer-core": "^10.1.0",
     "request-promise-native": "^1.0.9"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 import { requestHandler } from "./requests.js";
 import { seo } from "./html-crawlers/seo.js";
 import { scripts } from "./html-crawlers/scripts.js";
+// @ts-ignore
 import chromium from "chrome-aws-lambda";
 
 const httpHeaders = {
@@ -32,7 +33,7 @@ export const handler = async (event) => {
     return {
       statusCode: 500,
       headers: httpHeaders,
-      body: JSON.stringify({ error: "ERROR" }),
+      body: JSON.stringify({ error: "ERROR", log: error }),
     };
   }
 
