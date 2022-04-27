@@ -14,5 +14,5 @@ export const ENDPOINT_URL = () => {
     window.location.hostname === "127.0.0.1" ||
     window.location.hostname === ""
     ? "/api/audit"
-    : "production_url_here";
+    : "https://rpu4fu7cwxddtwd2y63vcxumrm0rbwcn.lambda-url.eu-north-1.on.aws";
 };
