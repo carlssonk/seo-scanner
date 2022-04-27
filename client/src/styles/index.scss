@@ -37,16 +37,11 @@ html,
 body,
 #root {
   width: 100%;
-  height: 100%;
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 
-body {
-  overflow-y: scroll;
-  background: var(--light-gray);
-}
-
 #root {
+  // background: var(--light-gray);
   .audit {
     display: flex;
     flex-direction: column;
@@ -66,7 +61,6 @@ body {
       max-width: 1440px;
       width: 100%;
       height: 100%;
-      background: var(--light-gray);
       // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       // border-radius: 12px;
       // border-left: 2px solid rgba(0, 0, 0, 0.1);
@@ -392,9 +386,6 @@ body {
       display: flex;
       flex-wrap: wrap;
       width: calc(100% - 80px);
-      & > * + * {
-        margin-top: 4px;
-      }
     }
     &__text {
       display: flex;

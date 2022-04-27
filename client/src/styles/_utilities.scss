@@ -1,6 +1,10 @@
 @import "variables";
 
 #root {
+  ul {
+    padding-left: unset;
+  }
+
   .font-xl {
     font-size: 50px;
   }
@@ -26,6 +30,7 @@
 
   .margin-0-auto {
     margin: 0 auto;
+    text-align: center;
   }
 
   .primary-paragraph {
