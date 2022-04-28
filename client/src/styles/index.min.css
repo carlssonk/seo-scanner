@@ -516,6 +516,7 @@ body,
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  min-height: 44px;
 }
 
 #root .entry .entryWrapper {
@@ -626,6 +627,12 @@ body,
 #root .entry__icon {
   margin-right: 6px;
   font-size: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 #root .entry__chevron {

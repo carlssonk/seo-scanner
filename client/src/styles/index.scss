@@ -275,6 +275,7 @@ body,
     margin: 8px 0;
     border-radius: 10px;
     justify-content: center;
+    min-height: 44px;
     .entryWrapper {
       position: relative;
       display: flex;
@@ -365,6 +366,8 @@ body,
     &__icon {
       margin-right: 6px;
       font-size: 20px;
+      display: flex;
+      align-items: center;
     }
     &__chevron {
       width: 40px;

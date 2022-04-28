@@ -18,7 +18,7 @@ function App() {
   // const [count, setCount] = useState(0)
   const [url, setUrl] = useState("");
   const [urlIsValid, setUrlIsValid] = useState(true);
-  const [flowState, setFlowState] = useState(0);
+  const [flowState, setFlowState] = useState(1);
   const [score, setScore] = useState(0);
 
   // All data
