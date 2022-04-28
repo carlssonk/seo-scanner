@@ -175,8 +175,6 @@ function App() {
 
     document.documentElement.style.marginRight = `${getScrollbarWidth()}px`;
     document.documentElement.style.overflow = "hidden";
-
-    // document.body.style.overflowY = "scroll";
   }
 
   function afterOpenModal() {
@@ -188,8 +186,6 @@ function App() {
     setModalIsOpen(false);
     document.documentElement.style.marginRight = ``;
     document.documentElement.style.overflow = "";
-
-    // document.body.style.overflowY = "";
   }
 
   return (
