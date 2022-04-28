@@ -1,15 +1,18 @@
 import React, { FormEvent } from "react";
+import { ERROR_COLOR } from "../utils";
 
 function Url({
   handleSubmit,
   urlIsValid,
   handleChangeUrl,
   checkUrl,
+  errorText,
 }: {
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
   urlIsValid: boolean;
   handleChangeUrl: (url: string) => void;
   checkUrl: (url: string) => void;
+  errorText: string;
 }) {
   return (
     <div className="url">
@@ -31,6 +34,7 @@ function Url({
         />
         <button className="url__button btn-primary">Testa sidan</button>
       </form>
+      <b style={{ color: ERROR_COLOR }}>{errorText}</b>
     </div>
   );
 }
