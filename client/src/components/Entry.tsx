@@ -24,15 +24,19 @@ function Entry({ entry }: { entry: EntryInterface }) {
     let startTagArray = tagStart.split(/(?<= )([^ ]*)(?==")|(?<==")(.*?)(?=")|(\s)|(=?")/g).filter((x) => x);
 
     const formatStartTagArray = startTagArray.map((str, idx, self) => {
-      if (idx === 0) return { html: str, type: "tag" };
-      if (str === '"' || str === '="' || str === ">") return { html: str, type: "extra" };
-      if (str === " ") return { html: str, type: "space" };
-      if (self[idx - 1] === " ") return { html: str, type: "attribute" };
-      if (self[idx - 1] === '="') return { html: str, type: "value" };
-      return { html: str, type: "" };
+      if (idx === 0) return { html: str, type: "tag", uid: nanoid() };
+      if (str === '"' || str === '="' || str === ">") return { html: str, type: "extra", uid: nanoid() };
+      if (str === " ") return { html: str, type: "space", uid: nanoid() };
+      if (self[idx - 1] === " ") return { html: str, type: "attribute", uid: nanoid() };
+      if (self[idx - 1] === '="') return { html: str, type: "value", uid: nanoid() };
+      return { html: str, type: "", uid: nanoid() };
     });
 
-    return [...formatStartTagArray, { html: tagContent, type: "content" }, { html: tagEnd, type: "tag" }];
+    return [
+      ...formatStartTagArray,
+      { html: tagContent, type: "content", uid: nanoid() },
+      { html: tagEnd, type: "tag", uid: nanoid() },
+    ];
   };
 
   // const splitTag = (html: string) => {
@@ -94,8 +98,8 @@ function Entry({ entry }: { entry: EntryInterface }) {
           </span> */}
           <span style={{ flexGrow: "1", display: "flex" }}>
             {entry.outerHTML ? (
-              separateElement(entry.outerHTML).map(({ html, type }, idx) => (
-                <>
+              separateElement(entry.outerHTML).map(({ html, type, uid }, idx) => (
+                <React.Fragment key={uid}>
                   {type === "tag" ? <div className={idx === 0 ? "tag-start-bg" : "tag-end-bg"}>{html}</div> : null}
                   {type === "extra" ? <div className="tag-content-bg">{html}</div> : null}
                   {type === "space" ? <div className="tag-content-bg" style={{ padding: "0 2px" }}></div> : null}
@@ -115,7 +119,7 @@ function Entry({ entry }: { entry: EntryInterface }) {
                       </div>
                     </div>
                   ) : null}
-                </>
+                </React.Fragment>
               ))
             ) : (
               <div>{entry.fallbackHTML}</div>

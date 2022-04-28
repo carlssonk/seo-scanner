@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.17.3",
     "gzip-size": "^7.0.0",
+    "nanoid": "^3.3.3",
     "puppeteer": "^13.5.1",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.9"

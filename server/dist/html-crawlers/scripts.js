@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { pipeEntries } from "../utils/utils.js";
 export const scripts = async (page) => {
     // Get all scripts
@@ -38,6 +39,7 @@ const hasHubspotTracking = (scripts) => {
         approved,
         outerHTML: "<script>",
         fallbackHTML: "",
+        uid: nanoid(),
         // elementContent: "",
         // tagStart: "<script>",
         // tagEnd: "",
@@ -58,6 +60,7 @@ const hasGoogleAnalyticsTracking = (scripts) => {
         approved,
         outerHTML: "<script>",
         fallbackHTML: "",
+        uid: nanoid(),
         // elementContent: "",
         // tagStart: "<script>",
         // tagEnd: "",
@@ -73,6 +76,7 @@ const hasGoogleTagManagerTracking = (scripts) => {
         approved,
         outerHTML: "<script>",
         fallbackHTML: "",
+        uid: nanoid(),
         // elementContent: "",
         // tagStart: "<script>",
         // tagEnd: "",

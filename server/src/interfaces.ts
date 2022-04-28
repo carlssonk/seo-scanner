@@ -4,6 +4,7 @@ export interface Entry {
   approved: boolean;
   outerHTML: string;
   fallbackHTML: string;
+  uid: string;
   // elementContent: string;
   // tagStart: string;
   // tagEnd: string;

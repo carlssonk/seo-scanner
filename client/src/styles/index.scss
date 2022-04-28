@@ -74,6 +74,13 @@ body,
   .details__entryList {
     overflow: hidden;
   }
+  .details__nameWrapper {
+    display: flex;
+    align-items: center;
+    i {
+      margin-left: 6px;
+    }
+  }
 
   .url {
     margin: 0 auto;
@@ -484,7 +491,8 @@ body,
       left: 6px;
       right: 6px;
       bottom: 6px;
-      background: var(--light-gray);
+      background-color: white;
+      // background: var(--light-gray);
       border-radius: 50%;
       z-index: 2;
     }
