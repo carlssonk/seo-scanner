@@ -1,4 +1,5 @@
 import { pipeEntries } from "../utils/utils.js";
+import { nanoid } from "nanoid";
 export const seo = async (page, requestDetails) => {
     // Scan for HTML TAGS
     // const funcs = [await hasOneH1(page),]
@@ -36,6 +37,7 @@ const avoidLargeFileSize = async (page, requestDetails) => {
         approved,
         outerHTML: "",
         fallbackHTML: "",
+        uid: nanoid(),
         // elementContent: "",
         // tagStart: "",
         // tagEnd: "",
@@ -57,6 +59,7 @@ const hasOneH1 = async (page) => {
         approved,
         outerHTML: `<h1>${(_a = h1s[0]) !== null && _a !== void 0 ? _a : ""}</h1>`,
         fallbackHTML: "",
+        uid: nanoid(),
         // elementContent: h1s[0],
         // tagStart: "<h1>",
         // tagEnd: "</h1>",
@@ -130,6 +133,7 @@ const skippedHeadingLevel = async (page) => {
         approved,
         outerHTML: "",
         fallbackHTML: "",
+        uid: nanoid(),
         // elementContent: "",
         // tagStart: "",
         // tagEnd: "",
@@ -194,6 +198,7 @@ const hasAltAttributes = async (page) => {
         approved,
         outerHTML: '<img alt="...">',
         fallbackHTML: '[alt=""]',
+        uid: nanoid(),
         // elementContent: "",
         // tagStart: '[alt="..."]',
         // tagEnd: "",
@@ -212,6 +217,7 @@ const hasTitle = async (page) => {
         approved,
         outerHTML: `<title>${title}</title>`,
         fallbackHTML: "",
+        uid: nanoid(),
         // elementContent: title,
         // tagStart: "<title>",
         // tagEnd: "</title>",
@@ -230,6 +236,7 @@ const hasMetaDescription = async (page) => {
         approved,
         outerHTML: description || '<meta name="description">',
         fallbackHTML: "",
+        uid: nanoid(),
         // elementContent: description,
         // tagStart: '<meta name="$description$" content="',
         // tagEnd: '">',
@@ -248,6 +255,7 @@ const hasMetaViewport = async (page) => {
         approved,
         outerHTML: '<meta name="viewport">',
         fallbackHTML: "",
+        uid: nanoid(),
         // elementContent: viewport,
         // tagStart: '<meta name="$viewport$" content="',
         // tagEnd: '">',

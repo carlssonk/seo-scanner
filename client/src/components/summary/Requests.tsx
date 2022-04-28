@@ -1,6 +1,7 @@
 import React from "react";
 import SummaryEntry from "../SummaryEntry";
 import { formatTotalSize } from "../../utils";
+import { nanoid } from "nanoid";
 
 function Requests({ data, summary, setSummary }: { data: any; summary: any; setSummary: any }) {
   return (
@@ -11,20 +12,29 @@ function Requests({ data, summary, setSummary }: { data: any; summary: any; setS
           {summary &&
             summary
               .sort((a: any, b: any) => b[1].totalSize - a[1].totalSize)
-              .map(([req, info]: [a: any[], b: { type: string; totalSize: number; showText: boolean }], i: number) => (
-                <SummaryEntry
-                  display="size"
-                  i={i}
-                  category={info.type}
-                  totalSize={info.totalSize}
-                  showText={info.showText}
-                  requests={req.length}
-                  data={data}
-                  formatTotalSize={formatTotalSize}
-                  summary={summary}
-                  setSummary={setSummary}
-                />
-              ))}
+              .map(
+                (
+                  [req, info]: [
+                    a: any[],
+                    b: { type: string; totalSize: number; showText: boolean; uid: string | number }
+                  ],
+                  i: number
+                ) => (
+                  <SummaryEntry
+                    key={info.uid}
+                    display="size"
+                    i={i}
+                    category={info.type}
+                    totalSize={info.totalSize}
+                    showText={info.showText}
+                    requests={req.length}
+                    data={data}
+                    formatTotalSize={formatTotalSize}
+                    summary={summary}
+                    setSummary={setSummary}
+                  />
+                )
+              )}
         </div>
       </div>
       <div>
@@ -33,20 +43,29 @@ function Requests({ data, summary, setSummary }: { data: any; summary: any; setS
           {summary &&
             summary
               .sort((a: any, b: any) => b[0].length - a[0].length)
-              .map(([req, info]: [a: any[], b: { type: string; totalSize: number; showText: boolean }], i: number) => (
-                <SummaryEntry
-                  display="requests"
-                  i={i}
-                  category={info.type}
-                  totalSize={info.totalSize}
-                  showText={info.showText}
-                  requests={req.length}
-                  data={data}
-                  formatTotalSize={formatTotalSize}
-                  summary={summary}
-                  setSummary={setSummary}
-                />
-              ))}
+              .map(
+                (
+                  [req, info]: [
+                    a: any[],
+                    b: { type: string; totalSize: number; showText: boolean; uid: string | number }
+                  ],
+                  i: number
+                ) => (
+                  <SummaryEntry
+                    key={info.uid}
+                    display="requests"
+                    i={i}
+                    category={info.type}
+                    totalSize={info.totalSize}
+                    showText={info.showText}
+                    requests={req.length}
+                    data={data}
+                    formatTotalSize={formatTotalSize}
+                    summary={summary}
+                    setSummary={setSummary}
+                  />
+                )
+              )}
         </div>
       </div>
       <ul className="summary__typeList">

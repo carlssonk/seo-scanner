@@ -36,7 +36,7 @@ ul {
 html,
 body,
 #root {
-  width: 100%;
+  height: 100%;
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 
@@ -73,6 +73,13 @@ body,
   }
   .details__entryList {
     overflow: hidden;
+  }
+  .details__nameWrapper {
+    display: flex;
+    align-items: center;
+    i {
+      margin-left: 6px;
+    }
   }
 
   .url {
@@ -275,6 +282,7 @@ body,
     margin: 8px 0;
     border-radius: 10px;
     justify-content: center;
+    min-height: 44px;
     .entryWrapper {
       position: relative;
       display: flex;
@@ -365,6 +373,8 @@ body,
     &__icon {
       margin-right: 6px;
       font-size: 20px;
+      display: flex;
+      align-items: center;
     }
     &__chevron {
       width: 40px;
@@ -481,7 +491,8 @@ body,
       left: 6px;
       right: 6px;
       bottom: 6px;
-      background: var(--light-gray);
+      background-color: white;
+      // background: var(--light-gray);
       border-radius: 50%;
       z-index: 2;
     }

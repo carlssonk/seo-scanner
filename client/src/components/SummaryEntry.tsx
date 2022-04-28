@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import React, { useRef, useState, useEffect, SetStateAction, Dispatch } from "react";
 
 function SummaryEntry({

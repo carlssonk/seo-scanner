@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer-core";
+import { nanoid } from "nanoid";
 import { Entry, scriptsInterface } from "../interfaces.js";
 import { pipeEntries } from "../utils/utils.js";
 
@@ -44,6 +45,7 @@ const hasHubspotTracking = (scripts: scriptsInterface[]): Entry => {
     approved,
     outerHTML: "<script>",
     fallbackHTML: "",
+    uid: nanoid(),
     // elementContent: "",
     // tagStart: "<script>",
     // tagEnd: "",
@@ -65,6 +67,7 @@ const hasGoogleAnalyticsTracking = (scripts: scriptsInterface[]): Entry => {
     approved,
     outerHTML: "<script>",
     fallbackHTML: "",
+    uid: nanoid(),
     // elementContent: "",
     // tagStart: "<script>",
     // tagEnd: "",
@@ -82,6 +85,7 @@ const hasGoogleTagManagerTracking = (scripts: scriptsInterface[]): Entry => {
     approved,
     outerHTML: "<script>",
     fallbackHTML: "",
+    uid: nanoid(),
     // elementContent: "",
     // tagStart: "<script>",
     // tagEnd: "",

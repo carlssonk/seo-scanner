@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 // import logo from './logo.svg'
 import { formatTotalSize, ENDPOINT_URL } from "./utils";
 // import './App.css'
+import Modal from "react-modal";
 
 import { FormEvent } from "react";
 import Url from "./components/Url";
@@ -13,6 +14,24 @@ import Requests from "./components/summary/Requests";
 
 const KONTAKT_URL = "https://www.ngine.com/kontakta-oss";
 
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    width: "90%",
+    maxWidth: "1440px",
+    minHeight: "400px",
+    padding: "24px",
+  },
+  overlay: { zIndex: 1 },
+};
+
+Modal.setAppElement("#root");
+
 function App() {
   const summaryRef = useRef<HTMLDivElement[]>([]);
   // const [count, setCount] = useState(0)
@@ -20,6 +39,7 @@ function App() {
   const [urlIsValid, setUrlIsValid] = useState(true);
   const [flowState, setFlowState] = useState(0);
   const [score, setScore] = useState(0);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   // All data
   const [data, setData] = useState<any>(null);
@@ -79,7 +99,12 @@ function App() {
       const formattedRequests = reqDetailsArray.map(([key, val]) => {
         return [
           val,
-          { type: key, totalSize: val.reduce((acc: any, cur: any) => acc + cur.transferSize, 0), showText: true },
+          {
+            type: key,
+            totalSize: val.reduce((acc: any, cur: any) => acc + cur.transferSize, 0),
+            showText: true,
+            uid: nanoid(),
+          },
         ];
       });
 
@@ -87,8 +112,8 @@ function App() {
       const reqDetailsRequests = formattedRequests.sort((a, b) => b[0].length - a[0].length);
 
       const pageDetails = [
-        { name: "SEO", data: data.seoDetails.sort((a: any, b: any) => a.approved - b.approved) },
-        { name: "SCRIPT", data: data.scriptDetails.sort((a: any, b: any) => a.approved - b.approved) },
+        { name: "SEO", data: data.seoDetails.sort((a: any, b: any) => a.approved - b.approved), uid: nanoid() },
+        { name: "SCRIPT", data: data.scriptDetails.sort((a: any, b: any) => a.approved - b.approved), uid: nanoid() },
       ];
 
       setDetails(pageDetails);
@@ -139,6 +164,29 @@ function App() {
 
     return score;
   };
+
+  function getScrollbarWidth() {
+    return window.innerWidth - document.documentElement.clientWidth;
+  }
+
+  function openModal() {
+    console.log(getScrollbarWidth());
+    setModalIsOpen(true);
+
+    document.documentElement.style.marginRight = `${getScrollbarWidth()}px`;
+    document.documentElement.style.overflow = "hidden";
+  }
+
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    // subtitle.style.color = "#f00";
+  }
+
+  function closeModal() {
+    setModalIsOpen(false);
+    document.documentElement.style.marginRight = ``;
+    document.documentElement.style.overflow = "";
+  }
 
   return (
     <div className="audit">
@@ -191,8 +239,8 @@ function App() {
                             cx="35"
                             cy="35"
                             fill="transparent"
-                            stroke-dasharray={209 + (score / 100) * 209}
-                            stroke-dashoffset="0"
+                            strokeDasharray={209 + (score / 100) * 209}
+                            strokeDashoffset="0"
                           ></circle>
                         </svg>
                         <b className="circle-value" data-js="category-value">
@@ -254,14 +302,36 @@ function App() {
             <ul style={{ width: "100%", paddingBottom: "32px" }}>
               {details &&
                 details.map((category: any) => (
-                  <li key={nanoid()} className="boxStyle details__listItem">
-                    <h3>{category.name}</h3>
+                  <li key={category.uid} className="boxStyle details__listItem">
+                    <div className="details__nameWrapper">
+                      <h3>{category.name}</h3>
+                      <i onClick={openModal} className="fa-solid fa-circle-info"></i>
+                    </div>
                     <ul className="details__entryList">
-                      {category.data && category.data.map((entry: EntryInterface) => <Entry entry={entry} />)}
+                      {category.data &&
+                        category.data.map((entry: EntryInterface) => <Entry key={entry.uid} entry={entry} />)}
                     </ul>
                   </li>
                 ))}
             </ul>
+            <Modal
+              isOpen={modalIsOpen}
+              onAfterOpen={afterOpenModal}
+              onRequestClose={closeModal}
+              style={customStyles}
+              contentLabel="Example Modal"
+            >
+              {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
+              <button className="modal-xmark" onClick={closeModal}>
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+              <p className="primary-paragraph">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quos ex, adipisci corporis qui fugit,
+                dolores architecto atque delectus suscipit amet nisi fugiat laborum consequuntur nam ducimus
+                repudiandae? Asperiores qui autem error temporibus cum exercitationem, aut ab? Dicta odio consequatur
+                eaque optio, cum eos, deserunt quam alias repudiandae at excepturi.
+              </p>
+            </Modal>
           </div>
         )}
       </div>

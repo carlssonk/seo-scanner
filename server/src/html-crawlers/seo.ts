@@ -1,6 +1,7 @@
 import puppeteer from "puppeteer-core";
 import { Entry, Error } from "../interfaces.js";
 import { pipeEntries } from "../utils/utils.js";
+import { nanoid } from "nanoid";
 
 export const seo = async (page, requestDetails) => {
   // Scan for HTML TAGS
@@ -48,6 +49,7 @@ const avoidLargeFileSize = async (page: puppeteer.Page, requestDetails: any[]): 
     approved,
     outerHTML: "",
     fallbackHTML: "",
+    uid: nanoid(),
     // elementContent: "",
     // tagStart: "",
     // tagEnd: "",
@@ -75,6 +77,7 @@ const hasOneH1 = async (page: puppeteer.Page): Promise<Entry> => {
     approved,
     outerHTML: `<h1>${h1s[0] ?? ""}</h1>`,
     fallbackHTML: "",
+    uid: nanoid(),
     // elementContent: h1s[0],
     // tagStart: "<h1>",
     // tagEnd: "</h1>",
@@ -157,6 +160,7 @@ const skippedHeadingLevel = async (page: puppeteer.Page): Promise<Entry> => {
     approved,
     outerHTML: "",
     fallbackHTML: "",
+    uid: nanoid(),
     // elementContent: "",
     // tagStart: "",
     // tagEnd: "",
@@ -229,6 +233,7 @@ const hasAltAttributes = async (page: puppeteer.Page): Promise<Entry> => {
     approved,
     outerHTML: '<img alt="...">',
     fallbackHTML: '[alt=""]',
+    uid: nanoid(),
     // elementContent: "",
     // tagStart: '[alt="..."]',
     // tagEnd: "",
@@ -249,6 +254,7 @@ const hasTitle = async (page: puppeteer.Page): Promise<Entry> => {
     approved,
     outerHTML: `<title>${title}</title>`,
     fallbackHTML: "",
+    uid: nanoid(),
     // elementContent: title,
     // tagStart: "<title>",
     // tagEnd: "</title>",
@@ -268,6 +274,7 @@ const hasMetaDescription = async (page: puppeteer.Page): Promise<Entry> => {
     approved,
     outerHTML: description || '<meta name="description">',
     fallbackHTML: "",
+    uid: nanoid(),
     // elementContent: description,
     // tagStart: '<meta name="$description$" content="',
     // tagEnd: '">',
@@ -288,6 +295,7 @@ const hasMetaViewport = async (page: puppeteer.Page): Promise<Entry> => {
     approved,
     outerHTML: '<meta name="viewport">',
     fallbackHTML: "",
+    uid: nanoid(),
     // elementContent: viewport,
     // tagStart: '<meta name="$viewport$" content="',
     // tagEnd: '">',
