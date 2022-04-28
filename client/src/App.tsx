@@ -40,6 +40,7 @@ function App() {
   const [flowState, setFlowState] = useState(0);
   const [score, setScore] = useState(0);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   // All data
   const [data, setData] = useState<any>(null);
@@ -86,6 +87,7 @@ function App() {
       const { data } = await res.json();
 
       if (data.error) {
+        setErrorText(`Tyvärr gick det inte att utföra en granskning på ${url}`);
         return setFlowState(0);
       }
 
@@ -197,6 +199,7 @@ function App() {
             urlIsValid={urlIsValid}
             handleChangeUrl={handleChangeUrl}
             checkUrl={checkUrl}
+            errorText={errorText}
           />
         )}
 
