@@ -18,7 +18,7 @@ export const handler = async (event) => {
   // console.log(data);
   // res.json({ data });
 
-  let url = "https://ngine.com";
+  let url = "";
   let responseCode = 200;
   // console.log("request: " + JSON.stringify(event));
 
