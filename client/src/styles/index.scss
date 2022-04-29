@@ -52,8 +52,6 @@ body,
     color: var(--primary-color);
     &__wrapper {
       position: relative;
-
-      // margin-top: 128px;
       padding-top: 32px;
       justify-content: center;
       align-items: center;
@@ -61,10 +59,11 @@ body,
       max-width: 1440px;
       width: 100%;
       height: 100%;
-      // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      // border-radius: 12px;
-      // border-left: 2px solid rgba(0, 0, 0, 0.1);
-      // border-right: 2px solid rgba(0, 0, 0, 0.1);
+      @media all and (max-width: $TABLET) {
+        h1 {
+          line-height: 46px;
+        }
+      }
     }
   }
 
@@ -105,6 +104,10 @@ body,
       max-width: 800px;
       height: 45px;
       display: flex;
+      @media all and (max-width: $MOBILE-PORTRAIT) {
+        flex-direction: column;
+        align-items: center;
+      }
       &--error {
         input {
           border-color: rgba(255, 0, 0, 0.5) !important;
@@ -144,6 +147,7 @@ body,
       padding: 0 12px;
       outline: none;
       font-size: 18px;
+      min-height: 45px;
       color: rgba(0, 0, 0, 0.8);
       &:focus {
         border-color: #2e8972;
@@ -153,6 +157,11 @@ body,
       height: 100%;
       margin-left: 12px;
       font-size: 18px;
+      @media all and (max-width: $MOBILE-PORTRAIT) {
+        margin-left: 0px;
+        margin-top: 12px;
+        max-width: 180px;
+      }
     }
   }
 
@@ -451,6 +460,9 @@ body,
     height: 100%;
     display: flex;
     text-align: start;
+    h1 {
+      margin-bottom: 0px;
+    }
     &__urlAnchor {
       text-decoration: none;
       color: unset;

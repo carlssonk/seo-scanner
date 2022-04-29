@@ -49,16 +49,6 @@ function App() {
   // const [requests, setRequests] = useState<any[]>([]);
   // Formatted data
   const [details, setDetails]: any = useState(null);
-  const entryRefs = useRef([
-    { name: "SEO", data: [createRef(), createRef(), createRef(), createRef(), createRef()] },
-    { name: "SCRIPT", data: [createRef(), createRef(), createRef()] },
-  ]);
-  // entryRefs.current = details.map((_: any, i: number) => entryRefs.current[i] ?? createRef());
-  // console.log(entryRefs);
-  // useEffect(() => {
-  // entryRefs
-  // console.log(details);
-  // }, [details]);
 
   useEffect(() => {
     summaryRef.current = summaryRef.current.slice(0, summary.length);

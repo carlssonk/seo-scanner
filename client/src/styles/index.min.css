@@ -15,6 +15,12 @@
   font-size: 50px;
 }
 
+@media all and (max-width: 991px) {
+  #root .font-xl {
+    font-size: 46px;
+  }
+}
+
 #root .font-m {
   font-size: 20px;
   line-height: 24px;
@@ -230,6 +236,12 @@ body,
   height: 100%;
 }
 
+@media all and (max-width: 991px) {
+  #root .audit__wrapper h1 {
+    line-height: 46px;
+  }
+}
+
 #root .details__listItem:not(:last-child) {
   margin-bottom: 12px;
 }
@@ -249,6 +261,7 @@ body,
 
 #root .details__nameWrapper i {
   margin-left: 6px;
+  cursor: pointer;
 }
 
 #root .url {
@@ -288,6 +301,18 @@ body,
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+}
+
+@media all and (max-width: 479px) {
+  #root .url__inputWrapper {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
 }
 
 #root .url__inputWrapper--error input {
@@ -341,6 +366,7 @@ body,
   padding: 0 12px;
   outline: none;
   font-size: 18px;
+  min-height: 45px;
   color: rgba(0, 0, 0, 0.8);
 }
 
@@ -352,6 +378,14 @@ body,
   height: 100%;
   margin-left: 12px;
   font-size: 18px;
+}
+
+@media all and (max-width: 479px) {
+  #root .url__button {
+    margin-left: 0px;
+    margin-top: 12px;
+    max-width: 180px;
+  }
 }
 
 #root .result {
@@ -769,6 +803,10 @@ body,
   display: -ms-flexbox;
   display: flex;
   text-align: start;
+}
+
+#root .loading h1 {
+  margin-bottom: 0px;
 }
 
 #root .loading__urlAnchor {
