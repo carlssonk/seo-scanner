@@ -9,27 +9,6 @@ export const scripts = async (page) => {
         hasGoogleTagManagerTracking(scripts),
     ]);
     return data;
-    // Scan for HTML SCRIPTS
-    // return [
-    //   {
-    //     approved: hasHubspotTracking(scripts),
-    //     tag: "<script>",
-    //     text: "Sidan innehåller HubSpot Tracking",
-    //     error: "",
-    //   },
-    //   {
-    //     approved: hasGoogleAnalyticsTracking(scripts),
-    //     tag: "<script>",
-    //     text: "Sidan innehåller Google Analytics Tracking",
-    //     error: "",
-    //   },
-    //   {
-    //     approved: hasGoogleTagManagerTracking(scripts),
-    //     tag: "<script>",
-    //     text: "Sidan innehåller Google Tag Manager Tracking",
-    //     error: "",
-    //   },
-    // ];
 };
 const hasHubspotTracking = (scripts) => {
     const id = "hs-script-loader";
@@ -40,10 +19,7 @@ const hasHubspotTracking = (scripts) => {
         outerHTML: "<script>",
         fallbackHTML: "",
         uid: nanoid(),
-        // elementContent: "",
-        // tagStart: "<script>",
-        // tagEnd: "",
-        text: "Sidan innehåller HubSpot Tracking",
+        text: approved ? "Sidan innehåller HubSpot Tracking" : "Sidan saknar HubSpot Tracking",
         error: !approved ? "Vi hitta inget HubSpot Tracking script på sidan." : "",
     };
     return object;
@@ -61,10 +37,7 @@ const hasGoogleAnalyticsTracking = (scripts) => {
         outerHTML: "<script>",
         fallbackHTML: "",
         uid: nanoid(),
-        // elementContent: "",
-        // tagStart: "<script>",
-        // tagEnd: "",
-        text: "Sidan innehåller Google Analytics Tracking",
+        text: approved ? "Sidan innehåller Google Analytics Tracking" : "Sidan saknar Google Analytics Tracking",
         error: !approved ? "Vi hitta inget Google Analytics Tracking script på sidan." : "",
     };
     return object;
@@ -77,10 +50,7 @@ const hasGoogleTagManagerTracking = (scripts) => {
         outerHTML: "<script>",
         fallbackHTML: "",
         uid: nanoid(),
-        // elementContent: "",
-        // tagStart: "<script>",
-        // tagEnd: "",
-        text: "Sidan innehåller Google Tag Manager",
+        text: approved ? "Sidan innehåller Google Tag Manager" : "Sidan saknar Google Tag Manager",
         error: !approved ? "Vi hitta inget Google Tag Manager Tracking script på sidan." : "",
     };
     return object;

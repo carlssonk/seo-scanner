@@ -38,10 +38,7 @@ const avoidLargeFileSize = async (page, requestDetails) => {
         outerHTML: "",
         fallbackHTML: "",
         uid: nanoid(),
-        // elementContent: "",
-        // tagStart: "",
-        // tagEnd: "",
-        text: "Sidan undviker stora nätverksnyttolaster",
+        text: approved ? "Sidan undviker stora nätverksnyttolaster" : "Sidan har stora nätverksnyttolaster",
         error: !approved ? error : "",
     };
     return object;
@@ -60,11 +57,12 @@ const hasOneH1 = async (page) => {
         outerHTML: `<h1>${(_a = h1s[0]) !== null && _a !== void 0 ? _a : ""}</h1>`,
         fallbackHTML: "",
         uid: nanoid(),
-        // elementContent: h1s[0],
-        // tagStart: "<h1>",
-        // tagEnd: "</h1>",
-        text: "Sidan innehåller 1 H1",
-        error: !approved ? `Vi hitta ${h1s.length} h1 rubriker på sidan.` : "",
+        text: approved
+            ? "Sidan innehåller 1 H1-element"
+            : `Sidan innehåller ${h1s.length > 1 ? "fler än 1" : "inget"} H1-element`,
+        error: !approved
+            ? `H1-taggen är viktig för SEO, tillgänglighet och användbarhet, så helst bör du ha en på varje sida på din webbplats. En H1-tagg ska beskriva vad innehållet på den givna sidan handlar om.\n Vi hitta ${h1s.length} h1 rubriker på sidan.`
+            : "",
     };
     return object;
 };
@@ -134,10 +132,7 @@ const skippedHeadingLevel = async (page) => {
         outerHTML: "",
         fallbackHTML: "",
         uid: nanoid(),
-        // elementContent: "",
-        // tagStart: "",
-        // tagEnd: "",
-        text: "Sidan använder rätt rubrikstruktur",
+        text: approved ? "Sidan använder rätt rubrikstruktur" : "Sidan har hoppat över rubriknivå",
         error: !approved ? createError : "",
     };
     return object;
@@ -189,20 +184,16 @@ const hasAltAttributes = async (page) => {
             catch (_a) { }
             error.elements.push({ outerHTML: altTags[i].outerHTML, screenshot });
         }
-        error.text = `Sidan saknar alt attribut på ${error.elements.length} element`;
+        error.text = `Alt-taggar ger sammanhang till vad en bild visar, information sökmotorsökrobotar och tillåter dem att indexera en bild korrekt.\n Sidan saknar alt attribut på ${error.elements.length} element`;
         return error;
     };
-    // || '<meta name="viewport">'
     const approved = altTags.every((tag) => tag.approved);
     const object = {
         approved,
         outerHTML: '<img alt="...">',
         fallbackHTML: '[alt=""]',
         uid: nanoid(),
-        // elementContent: "",
-        // tagStart: '[alt="..."]',
-        // tagEnd: "",
-        text: "Sidan saknar inga alt attribut",
+        text: approved ? "Sidan saknar inga alt attribut" : "Sidan saknar alt attribut",
         error: !approved ? await createError() : "",
     };
     return object;
@@ -218,11 +209,10 @@ const hasTitle = async (page) => {
         outerHTML: `<title>${title}</title>`,
         fallbackHTML: "",
         uid: nanoid(),
-        // elementContent: title,
-        // tagStart: "<title>",
-        // tagEnd: "</title>",
-        text: "Sidan innehåller en titel",
-        error: !approved ? "Sidan saknar en titel." : "",
+        text: approved ? "Sidan innehåller en titel" : "Sidan saknar en titel",
+        error: !approved
+            ? "Titeltaggar är viktiga för SEO eftersom de ger användarna och sökmotorerna sammanhang på respektive sida. De är en av de viktigaste SEO-strategierna på sidan som hjälper till att ge sökmotorer en uppfattning om vad varje sida handlar om."
+            : "",
     };
     return object;
 };
@@ -237,11 +227,10 @@ const hasMetaDescription = async (page) => {
         outerHTML: description || '<meta name="description">',
         fallbackHTML: "",
         uid: nanoid(),
-        // elementContent: description,
-        // tagStart: '<meta name="$description$" content="',
-        // tagEnd: '">',
-        text: "Sidan innehåller en beskrivning",
-        error: !approved ? "Sidan saknar en beskrivning." : "",
+        text: approved ? "Sidan innehåller en beskrivning" : "Sidan saknar en beskrivning",
+        error: !approved
+            ? "Description-metataggen är en viktig del av din SEO-strategi eftersom det är en av de första sakerna som sökarna ser när de möter en av dina sidor"
+            : "",
     };
     return object;
 };
@@ -256,11 +245,10 @@ const hasMetaViewport = async (page) => {
         outerHTML: '<meta name="viewport">',
         fallbackHTML: "",
         uid: nanoid(),
-        // elementContent: viewport,
-        // tagStart: '<meta name="$viewport$" content="',
-        // tagEnd: '">',
-        text: "Sidan innehåller en viewport",
-        error: !approved ? "Sidan saknar en viewport." : "",
+        text: approved ? "Sidan innehåller en viewport" : "Sidan saknar en viewport",
+        error: !approved
+            ? "Viewport-metataggen låter dig konfigurera hur en sida ska skalas och visas på vilken enhet som helst. Viewport-metataggen har inget direkt med rankningar att göra utan har mycket att göra med användarupplevelsen."
+            : "",
     };
     return object;
 };

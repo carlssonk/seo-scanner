@@ -4,9 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "deploy": "aws s3 cp ./dist/assets"
+    "build": "tsc && vite build && aws s3 cp dist/assets s3://scanner.web/dist/assets --recursive",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@types/react-modal": "^3.13.1",

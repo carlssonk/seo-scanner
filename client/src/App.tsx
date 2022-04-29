@@ -2,14 +2,13 @@ import { useState, useRef, createRef, useEffect } from "react";
 import { Entry as EntryInterface } from "../../server/src/interfaces";
 import { nanoid } from "nanoid";
 // import logo from './logo.svg'
-import { formatTotalSize, ENDPOINT_URL } from "./utils";
+import { formatTotalSize, ENDPOINT_URL, modalTextSEO, modalTextSCRIPT } from "./utils";
 // import './App.css'
 import Modal from "react-modal";
 
 import { FormEvent } from "react";
 import Url from "./components/Url";
 import Entry from "./components/Entry";
-import SummaryEntry from "./components/SummaryEntry";
 import Requests from "./components/summary/Requests";
 
 const KONTAKT_URL = "https://www.ngine.com/kontakta-oss";
@@ -22,12 +21,11 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
-    width: "90%",
-    maxWidth: "1440px",
-    minHeight: "400px",
+    maxWidth: "90%",
+    minHeight: "300px",
     padding: "24px",
   },
-  overlay: { zIndex: 1 },
+  overlay: { zIndex: 1, backgroundColor: "rgb(0 0 0 / 40%)" },
 };
 
 Modal.setAppElement("#root");
@@ -41,6 +39,7 @@ function App() {
   const [score, setScore] = useState(0);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const [modalText, setModalText] = useState("");
 
   // All data
   const [data, setData] = useState<any>(null);
@@ -64,7 +63,7 @@ function App() {
         finalUrl = `http://${url}`;
         setUrl(finalUrl);
       }
-      // ${ENDPOINT_URL()}
+
       setFlowState(1);
       const res = await fetch(`${ENDPOINT_URL()}?url=${finalUrl}`, {
         method: "GET",
@@ -74,9 +73,12 @@ function App() {
         },
       });
 
-      const { data } = await res.json();
+      if (res.status !== 200 && res.status !== 500) {
+        setErrorText(`Hoppsan, något gick fel.`);
+        return setFlowState(0);
+      }
 
-      console.log(data);
+      const { data } = await res.json();
 
       if (data.error) {
         setErrorText(`Tyvärr gick det inte att utföra en granskning på ${url}`);
@@ -163,17 +165,18 @@ function App() {
     return window.innerWidth - document.documentElement.clientWidth;
   }
 
-  function openModal() {
-    console.log(getScrollbarWidth());
+  function openModal(name: string) {
+    if (name === "SEO") {
+      setModalText(modalTextSEO);
+    }
+    if (name === "SCRIPT") {
+      setModalText(modalTextSCRIPT);
+    }
+
     setModalIsOpen(true);
 
     document.documentElement.style.marginRight = `${getScrollbarWidth()}px`;
     document.documentElement.style.overflow = "hidden";
-  }
-
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    // subtitle.style.color = "#f00";
   }
 
   function closeModal() {
@@ -300,7 +303,7 @@ function App() {
                   <li key={category.uid} className="boxStyle details__listItem">
                     <div className="details__nameWrapper">
                       <h3>{category.name}</h3>
-                      <i onClick={openModal} className="fa-solid fa-circle-info"></i>
+                      <i onClick={() => openModal(category.name)} className="fa-solid fa-circle-info"></i>
                     </div>
                     <ul className="details__entryList">
                       {category.data &&
@@ -309,23 +312,11 @@ function App() {
                   </li>
                 ))}
             </ul>
-            <Modal
-              isOpen={modalIsOpen}
-              onAfterOpen={afterOpenModal}
-              onRequestClose={closeModal}
-              style={customStyles}
-              contentLabel="Example Modal"
-            >
-              {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
+            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles} contentLabel="Example Modal">
               <button className="modal-xmark" onClick={closeModal}>
                 <i className="fa-solid fa-xmark"></i>
               </button>
-              <p className="primary-paragraph">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quos ex, adipisci corporis qui fugit,
-                dolores architecto atque delectus suscipit amet nisi fugiat laborum consequuntur nam ducimus
-                repudiandae? Asperiores qui autem error temporibus cum exercitationem, aut ab? Dicta odio consequatur
-                eaque optio, cum eos, deserunt quam alias repudiandae at excepturi.
-              </p>
+              <p className="primary-paragraph">{modalText}</p>
             </Modal>
           </div>
         )}

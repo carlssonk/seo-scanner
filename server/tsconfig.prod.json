@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig",
+  "exclude": ["./src/index.ts", "./src/interfaces.ts"]
+}

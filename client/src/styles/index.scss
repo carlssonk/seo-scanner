@@ -38,6 +38,7 @@ body,
 #root {
   height: 100%;
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  overflow: unset;
 }
 
 #root {
@@ -113,7 +114,6 @@ body,
           border-color: rgba(255, 0, 0, 0.5) !important;
         }
         &:after {
-          // border-radius: 10px;
           line-height: normal;
           transition: 200ms;
           position: absolute;
