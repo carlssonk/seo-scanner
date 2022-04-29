@@ -86,6 +86,8 @@ function App() {
 
       const { data } = await res.json();
 
+      console.log(data);
+
       if (data.error) {
         setErrorText(`Tyvärr gick det inte att utföra en granskning på ${url}`);
         return setFlowState(0);

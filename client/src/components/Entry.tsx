@@ -21,16 +21,18 @@ function Entry({ entry }: { entry: EntryInterface }) {
     const tagContent = splitTagFromContent[1];
     const tagEnd = splitTagFromContent[2];
 
-    let startTagArray = tagStart.split(/(?<= )([^ ]*)(?==")|(?<==")(.*?)(?=")|(\s)|(=?")/g).filter((x) => x);
-
-    const formatStartTagArray = startTagArray.map((str, idx, self) => {
-      if (idx === 0) return { html: str, type: "tag", uid: nanoid() };
-      if (str === '"' || str === '="' || str === ">") return { html: str, type: "extra", uid: nanoid() };
-      if (str === " ") return { html: str, type: "space", uid: nanoid() };
-      if (self[idx - 1] === " ") return { html: str, type: "attribute", uid: nanoid() };
-      if (self[idx - 1] === '="') return { html: str, type: "value", uid: nanoid() };
-      return { html: str, type: "", uid: nanoid() };
-    });
+    let formatStartTagArray = [{ html: tagStart, type: "tag", uid: nanoid() }];
+    try {
+      const startTagArray = tagStart.split(/(?<= )([^ ]*)(?==")|(?<==")(.*?)(?=")|(\s)|(=?")/g).filter((x) => x);
+      formatStartTagArray = startTagArray.map((str, idx, self) => {
+        if (idx === 0) return { html: str, type: "tag", uid: nanoid() };
+        if (str === '"' || str === '="' || str === ">") return { html: str, type: "extra", uid: nanoid() };
+        if (str === " ") return { html: str, type: "space", uid: nanoid() };
+        if (self[idx - 1] === " ") return { html: str, type: "attribute", uid: nanoid() };
+        if (self[idx - 1] === '="') return { html: str, type: "value", uid: nanoid() };
+        return { html: str, type: "", uid: nanoid() };
+      });
+    } catch {}
 
     return [
       ...formatStartTagArray,

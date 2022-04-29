@@ -28,7 +28,7 @@ export const handler = async (event) => {
         return {
             statusCode: 500,
             headers: httpHeaders,
-            body: JSON.stringify({ error: "ERROR", log: error }),
+            body: JSON.stringify({ data: { error: "ERROR", log: error } }),
         };
     }
     // The output from a Lambda proxy integration must be

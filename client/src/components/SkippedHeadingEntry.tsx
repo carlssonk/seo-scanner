@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import React, { useEffect } from "react";
 import { ERROR_COLOR, SUCCESS_COLOR } from "../utils";
 
@@ -33,16 +34,18 @@ function SkippedHeadingEntry({
     const tagContent = splitTagFromContent[1];
     const tagEnd = splitTagFromContent[2];
 
-    let startTagArray = tagStart.split(/(?<= )([^ ]*)(?==")|(?<==")(.*?)(?=")|(\s)|(=?")/g).filter((x) => x);
-
-    const formatStartTagArray = startTagArray.map((str, idx, self) => {
-      if (idx === 0) return { html: str, type: "tag" };
-      if (str === '"' || str === '="' || str === ">") return { html: str, type: "extra" };
-      if (str === " ") return { html: str, type: "space" };
-      if (self[idx - 1] === " ") return { html: str, type: "attribute" };
-      if (self[idx - 1] === '="') return { html: str, type: "value" };
-      return { html: str, type: "" };
-    });
+    let formatStartTagArray = [{ html: tagStart, type: "tag", uid: nanoid() }];
+    try {
+      const startTagArray = tagStart.split(/(?<= )([^ ]*)(?==")|(?<==")(.*?)(?=")|(\s)|(=?")/g).filter((x) => x);
+      formatStartTagArray = startTagArray.map((str, idx, self) => {
+        if (idx === 0) return { html: str, type: "tag", uid: nanoid() };
+        if (str === '"' || str === '="' || str === ">") return { html: str, type: "extra", uid: nanoid() };
+        if (str === " ") return { html: str, type: "space", uid: nanoid() };
+        if (self[idx - 1] === " ") return { html: str, type: "attribute", uid: nanoid() };
+        if (self[idx - 1] === '="') return { html: str, type: "value", uid: nanoid() };
+        return { html: str, type: "", uid: nanoid() };
+      });
+    } catch {}
 
     return [...formatStartTagArray, { html: tagContent, type: "content" }, { html: tagEnd, type: "tag" }];
   };
