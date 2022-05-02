@@ -120,6 +120,7 @@
 }
 
 #root .category-score .circle {
+  position: relative;
   width: 70px;
   height: 70px;
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 0, 0, 0.3) inset;

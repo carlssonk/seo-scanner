@@ -15,7 +15,6 @@ function SkippedHeadingEntry({
     const array = string.split(/(<[^]+?[1-6]|>)/g);
     array.pop(), array.shift(), array.splice(-2); // remove start and end bcus they are empty
 
-    console.log(array);
     const res = [
       { html: array[0], type: "tag", className: "tag-start-bg" },
       { html: array[1], type: "attribute", className: "tag-content-bg" },
@@ -36,15 +35,26 @@ function SkippedHeadingEntry({
 
     let formatStartTagArray = [{ html: tagStart, type: "tag", uid: nanoid() }];
     try {
-      const startTagArray = tagStart.split(/(?<= )([^ ]*)(?==")|(?<==")(.*?)(?=")|(\s)|(=?")/g).filter((x) => x);
+      let placesToInsertSpace: any[] = [];
+      const REG = new RegExp(`(?<= )([^ ]*)(?==")|(?<==")(.*?)(?=")|(=?")`, "g");
+      const startTagArray = tagStart.split(REG).filter((x) => x);
       formatStartTagArray = startTagArray.map((str, idx, self) => {
         if (idx === 0) return { html: str, type: "tag", uid: nanoid() };
         if (str === '"' || str === '="' || str === ">") return { html: str, type: "extra", uid: nanoid() };
         if (str === " ") return { html: str, type: "space", uid: nanoid() };
         if (self[idx - 1] === " ") return { html: str, type: "attribute", uid: nanoid() };
+        if (idx === 1 && self[idx - 1].includes(" ")) {
+          placesToInsertSpace.push(idx);
+          return { html: str, type: "attribute", uid: nanoid() };
+        }
         if (self[idx - 1] === '="') return { html: str, type: "value", uid: nanoid() };
+
         return { html: str, type: "", uid: nanoid() };
       });
+
+      placesToInsertSpace.forEach((idx) =>
+        (formatStartTagArray as any).splice(idx, 0, { html: " ", type: "space", uid: nanoid() })
+      );
     } catch {}
 
     return [...formatStartTagArray, { html: tagContent, type: "content" }, { html: tagEnd, type: "tag" }];

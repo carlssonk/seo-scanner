@@ -91,7 +91,6 @@ function App() {
 
       // : [string: any[]]
       const reqDetailsArray: [string, any][] = Object.entries(data.requestDetails);
-      // console.log(reqDetailsArray);
       const formattedRequests = reqDetailsArray.map(([key, val]) => {
         return [
           val,
