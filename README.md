@@ -7,9 +7,8 @@ Verktyg byggt med React/TypeScript & NodeJS/TypeScript. Servern är deployad som
 
 ## Bygg Servern för produktion
 1. Öppna terminalen i server mappen, skriv ```npm run build``
-2. Gå in i dist mappen och gör en zip av alla filer som finns med. OBS: säg till att inte själva dist mappen kommer med i den zippade versionen.
-3. Logga in i din AWS S3 Bucket och ersätt "scanner.server" med den nya zip filen
+2. Klar!
 
-## Bygg Klienten för produktion
+## Bygg Frontend för produktion
 1. Öppna terminalen i client mappen, skriv ```npm run build``
-2. ...
+4. Klar!
