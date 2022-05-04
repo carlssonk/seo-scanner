@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Error as ErrorInterface } from "../../../server/src/interfaces";
-import { ERROR_COLOR, formatTotalSize } from "../utils";
+import { formatTotalSize } from "../utils";
 import { nanoid } from "nanoid";
 import SkippedHeadingEntry from "./SkippedHeadingEntry";
 
@@ -80,11 +80,6 @@ function EntryError({ error, isOpen }: { error: ErrorInterface; isOpen: boolean 
               {error.auditType === "HEADING"
                 ? error.elements.map(({ previous, expected, current, outerHTML, screenshot }, index) => (
                     <li className="altErrorEntry">
-                      {/* {screenshot ? (
-                        <div className="altErrorEntry__imageWrapper">
-                          <img src={`data:image/png;base64, ${screenshot}`}></img>
-                        </div>
-                      ) : null} */}
                       <div className="mbottom-m">
                         Den föregående rubriknivån är {previous}, så nästa förväntade rubriknivå är {expected}
                       </div>

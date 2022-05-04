@@ -6,7 +6,6 @@ function SummaryEntry({
   i,
   category,
   totalSize,
-  showText,
   requests,
   data,
   formatTotalSize,
@@ -17,7 +16,6 @@ function SummaryEntry({
   i: number;
   category: string;
   totalSize: number;
-  showText: boolean;
   requests: any;
   data: any;
   formatTotalSize: (a: number) => string;
@@ -27,11 +25,9 @@ function SummaryEntry({
   const ref = useRef<any>(null);
 
   useEffect(() => {
-    // if (ref.current.offsetWidth < 50) {
     const updatedSummary = [...summary];
     updatedSummary[i][1].showText = false;
     setSummary(updatedSummary);
-    // }
   }, []);
 
   const categoryNameMap: any = {

@@ -1,4 +1,4 @@
-import React, { FormEvent } from "react";
+import { FormEvent } from "react";
 import { ERROR_COLOR } from "../utils";
 
 function Url({
@@ -34,7 +34,9 @@ function Url({
         />
         <button className="url__button btn-primary">Testa sidan</button>
       </form>
-      <b style={{ color: ERROR_COLOR }}>{errorText}</b>
+      <b className="error-text" style={{ color: ERROR_COLOR }}>
+        {errorText}
+      </b>
     </div>
   );
 }

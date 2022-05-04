@@ -1,4 +1,4 @@
-import { useState, useRef, createRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Entry as EntryInterface } from "../../server/src/interfaces";
 import { nanoid } from "nanoid";
 // import logo from './logo.svg'
@@ -45,7 +45,6 @@ function App() {
   const [data, setData] = useState<any>(null);
   // Formatted data
   const [summary, setSummary] = useState<any[]>([]);
-  // const [requests, setRequests] = useState<any[]>([]);
   // Formatted data
   const [details, setDetails]: any = useState(null);
 
@@ -102,9 +101,6 @@ function App() {
           },
         ];
       });
-
-      const reqDetailsSize = formattedRequests.sort((a, b) => b[1].totalSize - a[1].totalSize);
-      const reqDetailsRequests = formattedRequests.sort((a, b) => b[0].length - a[0].length);
 
       const pageDetails = [
         { name: "SEO", data: data.seoDetails.sort((a: any, b: any) => a.approved - b.approved), uid: nanoid() },

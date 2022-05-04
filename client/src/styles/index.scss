@@ -36,7 +36,7 @@ ul {
 html,
 body,
 #root {
-  height: 100%;
+  // height: 100%;
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
   overflow: unset;
 }
@@ -60,9 +60,18 @@ body,
       max-width: 1440px;
       width: 100%;
       height: 100%;
-      @media all and (max-width: $TABLET) {
-        h1 {
+      h1 {
+        margin: 0;
+        @media all and (max-width: $TABLET) {
           line-height: 46px;
+        }
+        @media all and (max-width: $MOBILE-PORTRAIT) {
+          line-height: 32px;
+        }
+      }
+      p {
+        @media all and (max-width: $MOBILE-PORTRAIT) {
+          font-size: 18px;
         }
       }
     }
@@ -94,7 +103,11 @@ body,
     align-items: center;
     & > * + * {
       margin-top: 24px;
+      @media all and (max-width: $MOBILE-PORTRAIT) {
+        margin-top: 12px;
+      }
     }
+
     &:first-child {
       line-height: 38px;
     }
@@ -103,7 +116,6 @@ body,
       z-index: 1;
       width: 100%;
       max-width: 800px;
-      height: 45px;
       display: flex;
       @media all and (max-width: $MOBILE-PORTRAIT) {
         flex-direction: column;
@@ -149,6 +161,9 @@ body,
       font-size: 18px;
       min-height: 45px;
       color: rgba(0, 0, 0, 0.8);
+      @media all and (max-width: $MOBILE-PORTRAIT) {
+        min-height: 50px;
+      }
       &:focus {
         border-color: #2e8972;
       }
@@ -161,6 +176,7 @@ body,
         margin-left: 0px;
         margin-top: 12px;
         max-width: 180px;
+        min-height: 45px;
       }
     }
   }
@@ -339,9 +355,13 @@ body,
         height: 120px;
         align-items: center;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        // border-top: 1px solid rgba(0, 0, 0, 0.1);
-        // margin: 12px 0;
         padding: 10px 0;
+
+        @media all and (max-width: $MOBILE-PORTRAIT) {
+          height: 160px;
+          flex-direction: column;
+          align-items: unset;
+        }
 
         &:nth-child(1) {
           border-top: 1px solid rgba(0, 0, 0, 0.1);
@@ -350,6 +370,14 @@ body,
         &__imageWrapper {
           min-width: 200px;
           max-width: 200px;
+          @media all and (max-width: $MOBILE-LANDSCAPE) {
+            min-width: 120px;
+            max-width: 120px;
+          }
+          @media all and (max-width: $MOBILE-PORTRAIT) {
+            width: 100%;
+            max-width: 200px;
+          }
           height: 100%;
           overflow: hidden;
           display: flex;
@@ -368,6 +396,9 @@ body,
         }
         &__size {
           margin-left: auto;
+          @media all and (max-width: $MOBILE-PORTRAIT) {
+            margin-left: initial;
+          }
         }
       }
     }
@@ -460,6 +491,19 @@ body,
     height: 100%;
     display: flex;
     text-align: start;
+
+    @media all and (max-width: $MOBILE-LANDSCAPE) {
+      h1 {
+        font-size: 26px;
+      }
+      h2 {
+        font-size: 20px;
+      }
+      h3 {
+        font-size: 16px;
+      }
+    }
+
     h1 {
       margin-bottom: 0px;
     }
@@ -496,6 +540,10 @@ body,
       border-radius: 50%;
       background: linear-gradient(45deg, transparent 40%, #0f434a);
       animation: move 0.8s linear infinite;
+      @media all and (max-width: $MOBILE-PORTRAIT) {
+        width: 100px;
+        height: 100px;
+      }
     }
     .loader::before {
       position: absolute;

@@ -1,6 +1,4 @@
-import { nanoid } from "nanoid";
-import React, { useEffect } from "react";
-import { ERROR_COLOR, SUCCESS_COLOR } from "../utils";
+import { ERROR_COLOR, separateElement } from "../utils";
 
 function SkippedHeadingEntry({
   outerHTML,
@@ -11,59 +9,9 @@ function SkippedHeadingEntry({
   isError: boolean;
   current: string;
 }) {
-  const seperateHeading = (string: string) => {
-    const array = string.split(/(<[^]+?[1-6]|>)/g);
-    array.pop(), array.shift(), array.splice(-2); // remove start and end bcus they are empty
-
-    const res = [
-      { html: array[0], type: "tag", className: "tag-start-bg" },
-      { html: array[1], type: "attribute", className: "tag-content-bg" },
-      { html: array[2], type: "tag", className: "tag-content-bg" },
-      { html: array[3], type: "content", className: "tag-content-bg" },
-      { html: `${array[4]}>`, type: "tag", className: "tag-end-bg" },
-    ].filter((x) => x.html);
-    return res;
-  };
-
-  const separateElement = (string: string) => {
-    const splitTagFromContent = string.split(/(<[^]+?>)/g);
-    splitTagFromContent.pop(), splitTagFromContent.shift(); // remove start and end bcus they are empty
-
-    const tagStart = splitTagFromContent[0];
-    const tagContent = splitTagFromContent[1];
-    const tagEnd = splitTagFromContent[2];
-
-    let formatStartTagArray = [{ html: tagStart, type: "tag", uid: nanoid() }];
-    try {
-      let placesToInsertSpace: any[] = [];
-      const REG = new RegExp(`(?<= )([^ ]*)(?==")|(?<==")(.*?)(?=")|(=?")`, "g");
-      const startTagArray = tagStart.split(REG).filter((x) => x);
-      formatStartTagArray = startTagArray.map((str, idx, self) => {
-        if (idx === 0) return { html: str, type: "tag", uid: nanoid() };
-        if (str === '"' || str === '="' || str === ">") return { html: str, type: "extra", uid: nanoid() };
-        if (str === " ") return { html: str, type: "space", uid: nanoid() };
-        if (self[idx - 1] === " ") return { html: str, type: "attribute", uid: nanoid() };
-        if (idx === 1 && self[idx - 1].includes(" ")) {
-          placesToInsertSpace.push(idx);
-          return { html: str, type: "attribute", uid: nanoid() };
-        }
-        if (self[idx - 1] === '="') return { html: str, type: "value", uid: nanoid() };
-
-        return { html: str, type: "", uid: nanoid() };
-      });
-
-      placesToInsertSpace.forEach((idx) =>
-        (formatStartTagArray as any).splice(idx, 0, { html: " ", type: "space", uid: nanoid() })
-      );
-    } catch {}
-
-    return [...formatStartTagArray, { html: tagContent, type: "content" }, { html: tagEnd, type: "tag" }];
-  };
-
   const splitTag = (html: string) => {
     const regex = new RegExp(`(${current.toLowerCase()})`);
     const splitted = html.split(regex);
-
     return splitted;
   };
 

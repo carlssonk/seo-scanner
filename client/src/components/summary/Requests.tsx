@@ -1,7 +1,5 @@
-import React from "react";
 import SummaryEntry from "../SummaryEntry";
 import { formatTotalSize } from "../../utils";
-import { nanoid } from "nanoid";
 
 function Requests({ data, summary, setSummary }: { data: any; summary: any; setSummary: any }) {
   return (
@@ -26,7 +24,6 @@ function Requests({ data, summary, setSummary }: { data: any; summary: any; setS
                     i={i}
                     category={info.type}
                     totalSize={info.totalSize}
-                    showText={info.showText}
                     requests={req.length}
                     data={data}
                     formatTotalSize={formatTotalSize}
@@ -57,7 +54,6 @@ function Requests({ data, summary, setSummary }: { data: any; summary: any; setS
                     i={i}
                     category={info.type}
                     totalSize={info.totalSize}
-                    showText={info.showText}
                     requests={req.length}
                     data={data}
                     formatTotalSize={formatTotalSize}

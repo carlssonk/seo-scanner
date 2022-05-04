@@ -17,6 +17,9 @@
     @media all and (max-width: $TABLET) {
       font-size: 46px;
     }
+    @media all and (max-width: $MOBILE-PORTRAIT) {
+      font-size: 32px;
+    }
   }
   .font-m {
     font-size: 20px;
@@ -142,4 +145,11 @@
   font-size: 20px;
   margin-bottom: 12px;
   cursor: pointer;
+}
+
+.error-text {
+  line-height: initial;
+  // @media all and (max-width: $MOBILE-LANDSCAPE) {
+  //   padding-top: 46px !important;
+  // }
 }
